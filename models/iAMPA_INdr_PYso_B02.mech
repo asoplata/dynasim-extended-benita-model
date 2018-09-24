@@ -1,0 +1,152 @@
+% # iAMPA_INdr_PYso_B02: Normalized synaptic AMPAergic excitatory current,
+%     with synaptic depression and minis, FROM the pyramidal axo-soma TO
+%     interneuron dendrite INdr<-PYso connection used in the DynaSim
+%     implementation of (Bazhenov et al., 2002). Note that in the original
+%     code, the class for this current is called AMPA_D2, PYso are called
+%     CX or CX_SOMA, and INdr are called CX, CX_DEND, or IN. Also note that,
+%     instead of using a Heaviside increase in transmitter concentration upon
+%     spike detection, we used the (1 + tanh(V/4)) formulation from (Ermentrout
+%     & Kopell, 1998) for our spike detector and transmitter concentration
+%     model.
+%
+% - Dependencies:
+%     - netconNearestNeighbors.m
+%     - newReleaseUpdate.m
+%
+% - References:
+%     - Bazhenov M, Timofeev I, Steriade M, Sejnowski TJ. Model of thalamocortical
+%         slow-wave sleep oscillations and transitions to activated states. The
+%         Journal of Neuroscience. 2002;22: 8691–8704.
+%     - Ermentrout GB, Kopell N. Fine structure of neural spiking and
+%         synchronization in the presence of conduction delays. Proceedings of
+%         the National Academy of Sciences. 1998;95: 1259–1264.
+%
+% - Tags: synapse, connection, excitation, ampa
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameters
+gAMPA =     1.0 % mS/cm^2
+gMiniAMPA = 0.5 % mS/cm^2
+EAMPA = 0 % mV
+
+% Initial conditions
+deprAMPAIC = 1
+deprAMPANoiseIC = 0
+laRelIC = 0
+laRelNoiseIC = 0
+laRelOneIC = 0
+laRelOneNoiseIC = 0
+laMiniIC = -10000
+laMiniNoiseIC = 0
+neMiniIC = 75
+neMiniNoiseIC = 20
+sAMPAIC = 0
+sAMPANoiseIC = 0
+sAMPAMiniIC = 0
+sAMPANoiseMiniIC = 0
+
+% This is a proportionality coefficient for ensuring our 0.5*(1+tanh(V/4))
+% spike detection produces the same increase in the synaptic activity variable
+% as the original code.
+Rinf = 0.72
+
+% This is roughly a term for how often the minis are firing, based on the original code
+miniFreq = 20 % in Hz
+
+% This is used as a minimum in the `newReleaseUpdate` function.
+epsilon = 0.000001
+
+% These are our experimental adjustment factors
+fac_AMPA_INdr_PYso_B02 = 1
+fac_MiniAMPA_INdr_PYso_B02 = 1
+
+% This is our DynaSim-varied, cell-type-NONspecific adjustment factor
+fac_AMPA_cort_large_vary = 0
+
+% Note that alpha rate here corresponds to the inverse of the rise  time constant, 1/tauR, and
+%        the beta rate here corresponds to the inverse of the decay time constant, 1/tauD
+alpha = 0.94  % ms^-1
+beta  = 0.18 % ms^-1
+
+% Synaptic depression parameters:
+% The proportion of total "resources" used in each action potential
+% In the original code, this is `Use`
+resUse = 0.073  % unitless
+resUseMini = 0  % unitless
+% In the original code, this is `Tr`
+tauRecov = 700 % in ms
+
+% Connectivity
+% Connective radius, aka how many target cells each source cell connects to,
+%     from the source's perspective.
+radius = 1
+
+% Keep connections to compartment with the same index
+removeRecurrentBool = 0
+% We also need to normalize the conductance in mS/cm^2 by the number of
+%     connections each target cell is receiving on average, so that the TOTAL sum
+%     of their conductive inputs adds to our overall maximal conductance above.
+% normalizingFactor = min(((2*radius + (1-removeRecurrentBool)) / (N_post/N_pre)), N_pre)
+
+% Note: despite the radius of connectivity being 1, all currents in this
+% connection are divided by 8, rather than 3 = (2*radius+1) in the original
+% code. This appears to be important for the simulation.
+
+% AES Upon later inspection, I accidentally swapped PY<->IN normalizers
+% normalizingFactor = 2
+normalizingFactor = 8
+
+% Note that what is passed is 2x the radius
+netcon = netconNearestNeighbors(2*radius, N_pre, N_post, removeRecurrentBool)
+
+% Functions
+% This checks for if there has been enough time since the last spike AND the
+% last mini
+checkTime(t,lastRelease,lastReleaseOne,newRelease) = ((t-lastReleaseOne)>70).*((t-lastRelease)>newRelease)
+
+IMiniAMPA_INdr_PYso_B02(X,t,sMini,depr) = (-((fac_MiniAMPA_INdr_PYso_B02+fac_AMPA_cort_large_vary).*gMiniAMPA/normalizingFactor).*(depr.*sMini)*netcon).*(X-EAMPA)
+
+IAMPA_INdr_PYso_B02(X,s,depr) = -(fac_AMPA_INdr_PYso_B02+fac_AMPA_cort_large_vary)*gAMPA/normalizingFactor.*((depr.*s)*netcon).*(X-EAMPA)
+
+monitor IMiniAMPA_INdr_PYso_B02
+monitor IAMPA_INdr_PYso_B02
+
+% ODEs and ICs
+% This represents the amount of synaptic resources available
+depr' = (((t-lastRelease-0.3-1)>0).*(X_pre>0).*(((1 - (1 - depr.*(1-resUse)).*exp(-(t-lastReleaseOne-0.3-1)./tauRecov))-depr))./dt) + ((t-lastRelease-0.3-1)>0).*checkTime(t,lastRelease,lastReleaseOne,newRelease).*(((1 - (1 - depr.*(1-resUseMini)).*(abs(-(t-lastReleaseOne)/tauRecov)<10).*exp(-(t-lastReleaseOne)./tauRecov))-depr)./dt)
+depr(0) = deprAMPAIC+deprAMPANoiseIC*rand(1,N_pre)
+
+% The "state" of the lastMini state variable is the ACTUAL time of the
+% last mini only
+lastMini' = ((t-lastRelease)>newRelease).*((t - lastMini)./dt)
+lastMini(0) = laMiniIC+laMiniNoiseIC.*rand(1,N_pre)
+% The "state" of the lastRelease state variable is the ACTUAL time of the
+% previous mini OR spike
+lastRelease' = ((t-lastRelease-0.3-1)>0).*checkTime(t,lastRelease,lastReleaseOne,newRelease).*((t - lastRelease)./dt) + ((t-lastRelease-0.3-1)>0).*(X_pre>0).*((t - lastRelease)./dt)
+lastRelease(0) = laRelIC+laRelNoiseIC.*rand(1,N_pre)
+% The "state" of the lastReleaseOne state variable is the ACTUAL time of the
+% previous spike only
+lastReleaseOne' = ((t-lastReleaseOne-0.3-1)>0).*(X_pre>0).*((t - lastReleaseOne)./dt)
+lastReleaseOne(0) = laRelOneIC+laRelOneNoiseIC.*rand(1,N_pre)
+
+% The "state" of the newRelease state variable is a random minimum AMOUNT of
+%     time until the next mini can happen for that synapse. (This is where the
+%     magic happens)
+% Note that `checkTime` is an internal function defined above, but
+%     `newReleaseUpdate` is an external function defined in
+%     `newReleaseUpdate.m`.
+newRelease' = checkTime(t,lastRelease,lastReleaseOne,newRelease).*((newReleaseUpdate((t-lastReleaseOne),miniFreq,epsilon,N_pre) - newRelease)./dt)
+newRelease(0) = neMiniIC+neMiniNoiseIC.*rand(1,N_pre)
+
+% This is the synaptic activity variable
+s' = alpha.*Rinf.*0.5.*(1 + tanh(X_pre./4)).*(1-s) - beta.*s
+s(0) = sAMPAIC+sAMPANoiseIC.*rand(1,N_pre)
+
+% This is a similar synaptic activity variable just for the minis (since
+% (1+tanh) only works if there is an actual presynaptic spike, which is not
+% required for a mini to go off)
+sMini' = alpha.*(((t-lastMini)<0.3)*Rinf).*(1-sMini) - beta.*sMini
+sMini(0) = sAMPAMiniIC+sAMPANoiseMiniIC.*rand(1,N_pre)
+
+% Linker
+@current += IAMPA_INdr_PYso_B02(X_post,s,depr) + IMiniAMPA_INdr_PYso_B02(X_post,t,sMini,depr)
+

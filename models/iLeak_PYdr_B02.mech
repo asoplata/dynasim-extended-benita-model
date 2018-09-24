@@ -1,0 +1,33 @@
+% # iLeak_PYdr_B02: Chloride/general Leak current, Hodgkin-Huxley-style, for
+%     generic pyramidal dendrite compartments used in the DynaSim
+%     implementation of (Bazhenov et al., 2002). Note that in the original
+%     code, this compartment/cell type is called CX or CX_DEND, and this
+%     current is defined using `G_l` and `E_l`.
+%
+% - Source: This was built from the original paper's code, using "currents.h"
+%     lines 1200, 1211, "CellSyn.h" lines 125 and 127, and "currents.cpp" line
+%     1066.
+%
+% - References:
+%     - Bazhenov M, Timofeev I, Steriade M, Sejnowski TJ. Model of thalamocortical
+%         slow-wave sleep oscillations and transitions to activated states. The
+%         Journal of Neuroscience. 2002;22: 8691–8704.
+%     - Chen J-Y, Chauvette S, Skorheim S, Timofeev I, Bazhenov M.
+%         Interneuron-mediated inhibition synchronizes neuronal activity during
+%         slow oscillation. The Journal of Physiology. 2012;590: 3987–4010.
+%         doi:10.1113/jphysiol.2012.227462
+%
+% - Tags: potassium, leak, current, intrinsic, pyramidal, dendrite
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameters
+% gLeak = 0.033 % mS/cm^2
+gLeak = (1e3)/30000 % mS/cm^2
+ELeak = -68   % mV
+
+% Functions
+ILeak_PYdr_B02(X) = -gLeak.*(X-ELeak)
+
+monitor ILeak_PYdr_B02
+
+% Linker
+@current += ILeak_PYdr_B02(X)

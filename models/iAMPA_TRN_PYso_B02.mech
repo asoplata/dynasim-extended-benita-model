@@ -1,0 +1,72 @@
+% # iAMPA_TRN_PYso_B02: Normalized synaptic AMPAergic excitatory current FROM the
+%     pyramidal axo-soma compartment TO nuclear reticular thalamus TRN<-PYso_B02
+%     connection used in the DynaSim implementation of (Bazhenov et al., 2002).
+%     Note that in the original code, the class for this current is called
+%     AMPA, PYso_B02 are called CX or CX_SOMA, and TRN are called RE. Also note
+%     that, instead of using a Heaviside increase in transmitter concentration
+%     upon spike detection, we used the (1 + tanh(V/4)) formulation from
+%     (Ermentrout & Kopell, 1998) for our spike detector and transmitter
+%     concentration model.
+%
+% - Source: This was built from the original paper's code, using "currents.h"
+%     lines 694-721, 1123, "currents.cpp" lines 390-431, and
+%     "network.cfg" line 35.
+%
+% - Dependencies:
+%     - netconNearestNeighbors.m
+%
+% - References:
+%     - Ermentrout GB, Kopell N. Fine structure of neural spiking and
+%         synchronization in the presence of conduction delays. Proceedings of
+%         the National Academy of Sciences. 1998;95: 1259–1264.
+%     - Bazhenov M, Timofeev I, Steriade M, Sejnowski TJ. Model of thalamocortical
+%         slow-wave sleep oscillations and transitions to activated states. The
+%         Journal of Neuroscience. 2002;22: 8691–8704.
+%
+% - Tags: synapse, connection, excitation, ampa
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameters
+
+gAMPA = 0.105 % mS/cm^2
+EAMPA = 0    % mV
+sAMPAIC = 0.1
+sAMPANoiseIC = 0.1
+
+% Note that alpha rate here corresponds to the inverse of the rise  time constant, 1/tauR, and
+%        the beta rate here corresponds to the inverse of the decay time constant, 1/tauD
+alpha = 1.1  % ms^-1
+beta  = 0.19 % ms^-1
+
+% In the original code, this sleep stage experimental factor is represented by
+%     `fac_AMPA_TC`
+fac_AMPA_TRN_PYso_B02 = 1
+
+% Connective radius, aka how many target cells each source cell connects to,
+%     from the source's perspective.
+radius = 5
+
+% We also need to normalize the conductance in mS/cm^2 by the number of
+%     connections each target cell is receiving on average, so that the TOTAL sum
+%     of their conductive inputs adds to our overall maximal conductance above.
+normalizingFactor = min(((2*radius + 1) / (N_post/N_pre)), N_pre)
+
+
+% Functions
+% Keep connections to compartment with the same index
+removeRecurrentBool = 0
+% Note that what is passed is 2x the radius
+netcon = netconNearestNeighbors(2*radius, N_pre, N_post, removeRecurrentBool)
+
+IAMPA_TRN_PYso_B02(X,s) = -fac_AMPA_TRN_PYso_B02*gAMPA/normalizingFactor.*(s*netcon).*(X-EAMPA)
+
+% This way we record the synaptic currents!
+monitor IAMPA_TRN_PYso_B02
+
+
+% ODEs and ICs
+s' = alpha.*(1 + tanh(X_pre./4)).*(1-s) - beta.*s
+s(0) = sAMPAIC+sAMPANoiseIC.*rand(1,N_pre)
+
+
+% Linker
+@current += IAMPA_TRN_PYso_B02(X_post,s)

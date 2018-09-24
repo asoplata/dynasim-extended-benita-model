@@ -1,0 +1,76 @@
+% # iNMDA_PYdr_PYso_B02: Normalized synaptic NMDAergic excitatory current FROM the
+%     pyramidal axo-soma TO pyramidal dendrite PYdr<-PYso_B02 connection used in
+%     the DynaSim implementation of (Bazhenov et al., 2002). Note that in the
+%     original code, the class for this current is called NMDA_D1, PYso_B02 are
+%     called CX or CX_SOMA, and PYdr are called CX or CX_DEND. Also note that,
+%     instead of using a Heaviside increase in transmitter concentration upon
+%     spike detection, we used the (1 + tanh(V/4)) formulation from (Ermentrout
+%     & Kopell, 1998) for our spike detector and transmitter concentration
+%     model.
+%
+% - Note: Even though NMDA_D1 contains the code for using synaptic depression,
+%     because it is initialized with `Use = 0.0` on "currents.h" line 889, the
+%     synaptic depression will never affect the simulation, and therefore does
+%     not need to be calculated.
+%
+% - Source: This was built from the original paper's code, using "currents.h"
+%     lines 219, 865-897, 1258, 1280-1281, "currents.cpp" lines 665-705, and
+%     "network.cfg" line 32.
+%
+% - References:
+%     - Ermentrout GB, Kopell N. Fine structure of neural spiking and
+%         synchronization in the presence of conduction delays. Proceedings of
+%         the National Academy of Sciences. 1998;95: 1259–1264.
+%     - Bazhenov M, Timofeev I, Steriade M, Sejnowski TJ. Model of thalamocortical
+%         slow-wave sleep oscillations and transitions to activated states. The
+%         Journal of Neuroscience. 2002;22: 8691–8704.
+%
+% - Tags: synapse, connection, excitation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameters
+%
+gNMDA = 0.006 % mS/cm^2
+
+ENMDA = 0    % mV
+
+Rinf = 0.72
+
+sIC = 0
+sNoiseIC = 0
+
+% Note that alpha rate here corresponds to the inverse of the rise  time constant, 1/tauR, and
+%        the beta rate here corresponds to the inverse of the decay time constant, 1/tauD
+alpha = 1      % ms^-1
+beta  = 0.0067 % ms^-1
+
+% Connective radius, aka how many target cells each source cell connects to,
+%     from the source's perspective.
+radius = 5
+
+% We also need to normalize the conductance in mS/cm^2 by the number of
+%     connections each target cell is receiving on average, so that the TOTAL sum
+%     of their conductive inputs adds to our overall maximal conductance above.
+% AES
+% normalizingFactor = min(((2*radius + 1) / (N_post/N_pre)), N_pre)
+normalizingFactor = 10
+
+
+% Functions
+% Remove autapses to the dendrite corresponding to this soma
+removeRecurrentBool = 1
+% Note that what is passed is 2x the radius
+netcon = netconNearestNeighbors(2*radius, N_pre, N_post, removeRecurrentBool)
+
+weirdFunction(voltage) = 1./(1+exp(-(voltage - (-25))./12.5))
+
+INMDA_PYdr_PYso_B02(X,s) = -gNMDA/normalizingFactor.*(s*netcon).*weirdFunction(X).*(X-ENMDA)
+
+% This way we record the synaptic currents!
+monitor INMDA_PYdr_PYso_B02
+
+% ODEs and ICs
+s' = alpha.*Rinf.*0.5.*(1 + tanh(X_pre./4)).*(1-s) - beta.*s
+s(0) = sIC+sNoiseIC.*rand(1,N_pre)
+
+% Linker
+@current += INMDA_PYdr_PYso_B02(X_post,s)

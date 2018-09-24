@@ -1,0 +1,35 @@
+% # iKLeak_INdr_B02: Potassium Leak current, Hodgkin-Huxley-style, for generic
+%     interneuron dendrite compartments used in the DynaSim implementation of
+%     (Bazhenov et al., 2002). Note that in the original code, this
+%     compartment/cell type is called CX, CX_DEND, and sometimes IN, and this
+%     current is defined using `G_kl` and `INaK::E_K`.
+%
+% - Source: This was built from the original paper's code, using "currents.h"
+%     line 1201, "CellSyn.h" line 172, and "currents.cpp" lines 103, 1066.
+%
+% - References:
+%     - Bazhenov M, Timofeev I, Steriade M, Sejnowski TJ. Model of thalamocortical
+%         slow-wave sleep oscillations and transitions to activated states. The
+%         Journal of Neuroscience. 2002;22: 8691–8704.
+%
+% - Tags: potassium, leak, current, intrinsic, interneuron, dendrite
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameters
+% gKLeak = 0.005 % mS/cm^2
+gKLeak = 0 % mS/cm^2
+EKLeak = -95    % mV
+
+% In the original code, this sleep stage experimental factor is represented by
+%     `fac_gkl`
+fac_KLeak_INdr_B02 = 1
+
+% This is our DynaSim-varied, cell-type-NONspecific adjustment factor
+fac_KLeak_cort_large_vary = 0
+
+% Functions
+IKLeak_INdr_B02(X) = -(fac_KLeak_INdr_B02+fac_KLeak_cort_large_vary).*gKLeak.*(X-EKLeak)
+
+monitor IKLeak_INdr_B02
+
+% Linker
+@current += IKLeak_INdr_B02(X)
