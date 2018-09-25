@@ -20,25 +20,16 @@
 % - Tags: current, pyramidal, dendrite, soma
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters
-% Since DynaSim uses maximal conductances in units "mS/cm^2" for all currents,
-%     including connective ones, we have to convert the conductancee. The
-%     original paper cites (Mainen & Sejnowski, 1996) for most of this
-%     derivation. (Bazhenov et al., 2002), its predecessors, and its code give
-%     the resistance between compartments as a variable "kappa", which is 10
-%     MOhm = 10e3 kOhm. The area of the soma compartment is given as 100 um^2 =
-%     1e-6 cm^2 in (Mainen & Sejnowski, 1996), while the area of the dendrite
-%     compartment is given as a multiple "rho" of the soma compartment area,
-%     where rho = 165 in the code for (Bazhenov et al., 2002). In the original
-%     code, it seems the dendritic area was used to calculate the conductance
-%     of the connection. Since conductance in mSiemens is the reciprocal of
-%     resistance in kOhms, we can convert to mS/cm^2 using:
+% For the compartmental conductance going to the dendrites, need to divide the
+% the total current, 1.75 +- 0.1 uS, by 'A_d', the area of the dendrite, in
+% order to get a per-area conductance, which is what DynaSim prefers.
 %
-%     1 / (kappa=10e3 kOhm) * 1 / (rho=165 * S_CX_SOMA=1e-6 cm^2) = 0.6 mS/cm^2
-gCOM=0.6
+%   1.75 uS / 0.035 mm^2 = 5 mS/cm^2
+gCOM=5
 
 % Functions
-% Note that this is the same as -gCOM * (Vdr - Vso) = gCOM * (Vso - Vdr)
-ICOM_PYdr_PYso_B02(IN,OUT) = gCOM.*(IN-OUT)
+% Note that this is the same as -gCOM * (Vdr - Vso)
+ICOM_PYdr_PYso_B02(IN,OUT) = -gCOM.*(OUT-IN)
 
 % Linkers
 @current += ICOM_PYdr_PYso_B02(IN,OUT)

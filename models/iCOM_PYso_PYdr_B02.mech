@@ -18,13 +18,17 @@
 %
 % - Tags: current, pyramidal, dendrite, soma
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Linkers
-% Note that, due to the "reduced form" used in the PYso's master equations, it
-%     is significantly easier to understand how the system is calculated by
-%     doing all of the conversions in the master equation rather than
-%     separately in nonstandard methods in the mechanism files. In other words,
-%     trust me that this setup, including this handling of the dendritic
-%     voltage, is the easiest to understand.
-voltageFunction(IN) = IN
+% Parameters
+% For the compartmental conductance going to the dendrites, need to divide the
+% the total current, 1.75 +- 0.1 uS, by 'A_d', the area of the dendrite, in
+% order to get a per-area conductance, which is what DynaSim prefers.
+%
+%   1.75 uS / 0.015 mm^2 = 11.667 mS/cm^2
+gCOM=11.667
 
-@voltage += voltageFunction(IN)
+% Functions
+% Note that this is the same as -gCOM * (Vso - Vdr)
+ICOM_PYso_PYdr_B02(IN,OUT) = -gCOM.*(OUT-IN)
+
+% Linkers
+@current += ICOM_PYso_PYdr_B02(IN,OUT)
