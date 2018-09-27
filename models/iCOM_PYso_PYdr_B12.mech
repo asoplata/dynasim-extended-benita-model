@@ -1,5 +1,5 @@
-% # iCOM_PYso_PYdr_B02: Simple ohmic axial current for connecting FROM PY cell
-%     dendrite compartments TO PY cell axo-somatic compartments PYso<-PYdr_B02 used
+% # iCOM_PYso_PYdr_B12: Simple ohmic axial current for connecting FROM PY cell
+%     dendrite compartments TO PY cell axo-somatic compartments PYso<-PYdr_B12 used
 %     in the DynaSim implementation of (Bazhenov et al., 2002). Note that in
 %     the original code, this cell type is called CX, and the compartments are
 %     called CX_DEND or CX_SOMA.
@@ -28,7 +28,7 @@ gCOM=11.667
 
 % Functions
 % Note that this is the same as -gCOM * (Vso - Vdr)
-ICOM_PYso_PYdr_B02(IN,OUT) = -gCOM.*(OUT-IN)
+ICOM_PYso_PYdr_B12(IN,OUT) = -gCOM.*(OUT-IN)
 
 % Linkers
-@current += ICOM_PYso_PYdr_B02(IN,OUT)
+@current += ICOM_PYso_PYdr_B12(IN,OUT)

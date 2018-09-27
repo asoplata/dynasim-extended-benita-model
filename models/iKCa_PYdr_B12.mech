@@ -1,10 +1,9 @@
-% # iKCa_INdr_B02: slow calcium-dependent potassium current, for generic
-%     interneuron dendrite compartments used in the DynaSim implementation of
+% # iKCa_PYdr_B12: Slow calcium-dependent potassium current, for generic
+%     pyramidal dendrite compartments used in the DynaSim implementation of
 %     (Bazhenov et al., 2002). In the original code, this compartment/cell type
-%     is called CX, CX_DEND, and sometimes IN, and this current is called
-%     IKCa_CX.
+%     is called CX or CX_DEND, and this current is called IKCa_CX.
 %
-% - Note: In original code, IKCa consumes y[1] which is `Cai0` for the
+% - Note: In original code, IKCa consumes y[1], which is `Cai0` for the
 %     celltype, and y[1] is also used as the primary state variable `cai` for
 %     the Ca buffer ICa. Therefore, IKCa is using the cai of ICa.
 %
@@ -13,17 +12,17 @@
 %         slow-wave sleep oscillations and transitions to activated states. The
 %         Journal of Neuroscience. 2002;22: 8691–8704.
 %
-% - Requires: @CaBuffer_INdr_B02 calcium concentration exposed by
-%     "CaBuffer_INdr_B02" mechanism
+% - Requires: @CaBuffer_PYdr_B12 calcium concentration exposed by
+%     "CaBuffer_PYdr_B12" mechanism
 %
-% - Tags: calcium, potassium, current, intrinsic, interneuron, dendrite
+% - Tags: calcium, potassium, current, intrinsic, pyramidal, dendrite
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters
 gKCa = 0.3 % mS/cm^2
 EKCa = -90  % mV
 % The Q10 temperature adjustment values never change over the course of the
 %     simulations, so we are setting them to be constant.
-% Called "Tad" in original code, unlike Q's of "IHVA_INdr_B02".
+% This is called "Tad" in original code, unlike Q's of "IHVA_PYdr_B12".
 phiM = 2.3^((36-23)/10)
 
 mKCaIC = 0.1
@@ -31,23 +30,21 @@ mKCaNoiseIC = 0.1
 
 % In the original code, this sleep stage experimental factor is represented by
 %     `fac_gkca_cx`, but it is never used!
-fac_KCa_INdr_B02 = 1  % unitless
+fac_KCa_PYdr_B12 = 1  % unitless
 
 % Functions
 % In original code, there is a note that the Cai exponent is 1
-alphaM(CaBuffer_INdr_B02) = 0.01.*CaBuffer_INdr_B02
+alphaM(CaBuffer_PYdr_B12) = 0.01.*CaBuffer_PYdr_B12
 betaM = 0.02
+tauM(CaBuffer_PYdr_B12) = (1./(alphaM(@CaBuffer_PYdr_B12) + betaM))./phiM
+Minf(CaBuffer_PYdr_B12) = alphaM(@CaBuffer_PYdr_B12)./(alphaM(@CaBuffer_PYdr_B12) + betaM)
+IKCa_PYdr_B12(X,mKCa) = -phiM.*fac_KCa_PYdr_B12.*gKCa.*mKCa.*(X-EKCa)
 
-tauM(CaBuffer_INdr_B02) = (1./(alphaM(@CaBuffer_INdr_B02) + betaM))./phiM
-Minf(CaBuffer_INdr_B02) = alphaM(@CaBuffer_INdr_B02)./(alphaM(@CaBuffer_INdr_B02) + betaM)
-
-IKCa_INdr_B02(X,mKCa) = -phiM.*fac_KCa_INdr_B02.*gKCa.*mKCa.*(X-EKCa)
-
-monitor IKCa_INdr_B02
+monitor IKCa_PYdr_B12
 
 % ODEs and ICs
-mKCa' = (Minf(@CaBuffer_INdr_B02) - mKCa)./tauM(@CaBuffer_INdr_B02)
+mKCa' = (Minf(@CaBuffer_PYdr_B12) - mKCa)./tauM(@CaBuffer_PYdr_B12)
 mKCa(0)=mKCaIC+mKCaNoiseIC.*rand(1,Npop)
 
 % Interface
-@current += IKCa_INdr_B02(X,mKCa)
+@current += IKCa_PYdr_B12(X,mKCa)

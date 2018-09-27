@@ -1,12 +1,12 @@
-% # iM_PYdr_B02: Slow voltage-dependent non-inactivating potassium current,
-%     for generic pyramidal dendrite compartments used in the DynaSim
+% # iM_INdr_B12: Slow voltage-dependent non-inactivating potassium current,
+%     for generic interneuron dendrite compartments used in the DynaSim
 %     implementation of (Bazhenov et al., 2002). Note that in the original
-%     code, this compartment/cell type is called CX or CX_DEND, and this
-%     current is called IKm_CX, while in the paper it is called IKm.
+%     code, this compartment/cell type is called CX, CX_DEND, and sometimes IN,
+%     and this current is called IKm_CX, while in the paper it is called IKm.
 %
 % - Source: This was built from the original paper's code, using "currents.h"
-%     lines 451-468, 1210, "CellSyn.h" line 126, and "currents.cpp" lines
-%     240-251. This seems to be built from (Mainen & Sejnowski, 1996, Nature).
+%     lines 451-468, 1210 and "currents.cpp" lines 240-251. This seems to be
+%     built from (Mainen & Sejnowski, 1996, Nature).
 %
 % - References:
 %     - Bazhenov M, Timofeev I, Steriade M, Sejnowski TJ. Model of thalamocortical
@@ -16,14 +16,14 @@
 %         pattern in model neocortical neurons. Nature. 1996;382: 363–366.
 %         doi:10.1038/382363a0
 %
-% - Tags: potassium, current, intrinsic, pyramidal, dendrite
+% - Tags: potassium, current, intrinsic, interneuron, dendrite
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters
 gM = 0.01 % mS/cm^2
 EM = -90   % mV
 % In the original code, this sleep stage experimental factor is represented by
 %     `fac_gkm_cx`
-fac_M_PYdr_B02 = 1
+fac_M_INdr_B12 = 1
 
 %% Not sure what these parameters actually represent
 tha = -30   % mV, but unknown meaning
@@ -40,13 +40,13 @@ alphaM(X) = 0.001.*(X - tha)./(1 - exp(-(X - tha)./qa))
 betaM(X) = -0.001.*(X - tha)./(1 - exp( (X - tha)./qa))
 tauM(X) = (1./(alphaM(X) + betaM(X)))./phiM
 Minf(X) = alphaM(X)./(alphaM(X) + betaM(X))
-IM_PYdr_B02(X,mM) = -phiM.*fac_M_PYdr_B02 .*gM.*mM.*(X-EM)
+IM_INdr_B12(X,mM) = -phiM.*fac_M_INdr_B12 .*gM.*mM.*(X-EM)
 
-monitor IM_PYdr_B02
+monitor IM_INdr_B12
 
 % ODEs and ICs
 mM' = (Minf(X)-mM)./tauM(X)
 mM(0)=mMIC+mMNoiseIC.*rand(1,Npop)
 
 % Interface
-@current += IM_PYdr_B02(X,mM)
+@current += IM_INdr_B12(X,mM)

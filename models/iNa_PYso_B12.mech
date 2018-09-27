@@ -1,4 +1,4 @@
-% # iNa_PYso_B02: Fast sodium current for generic pyramidal soma
+% # iNa_PYso_B12: Fast sodium current for generic pyramidal soma
 %     compartments used in the DynaSim implementation of (Bazhenov et al.,
 %     2002). Note that in the original code, this compartment/cell type is
 %     called CX or CX_SOMA, and this current is called INa_CX.
@@ -23,8 +23,9 @@
 % - Tags: sodium, current, intrinsic, pyramidal, soma
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters
-gNa = 3000 % mS/cm^2
-ENa = 50  % mV
+gNa = 50 % mS/cm^2
+ENa = 55 % mV
+
 % The Q10 temperature adjustment values never change over the course of the
 %     simulations, so we are setting them to be constant.
 phiM = 2.3^((36-23)/10)   % unitless Q10 value of temperature adjustment
@@ -49,7 +50,7 @@ expDenomH = 5
 % Functions
 % vShifted(X) = X - 10
 
-% This is implenting the `trap0` function in the original code
+% This is implenting the `traj0` function in the original code
 alphaM(X) = iNaThresholdDetector( (X-10),  threshM, rateConstantMAlpha, expDenomM)
 betaM(X) =  iNaThresholdDetector(-(X-10), -threshM, rateConstantMBeta,  expDenomM)
 
@@ -61,20 +62,10 @@ Minf(X) = alphaM(X)./(alphaM(X) + betaM(X))
 tauH(X) = (1./(alphaH(X) + betaH(X)))./phiH
 Hinf(X) = 1./(1 + exp(((X-10) + 65)./6.2))
 
-% Instead of the PYso_B02 axo-somatic compartment calculating the dv/dt the normal
-%     way, they solve for just v using the "steady-state" values of the system.
-%     This means that we have to calculate different parts of the current/etc.
-%     differently:
-% Note that the below doesn't contain the voltage of the soma. This is
-%     analogous to the corresponding part of `g2_SOMA` in the original code:
-curr_Na_PYso_B02(X,mNa,hNa) = phiM*gNa.*mNa.^3.*hNa.*ENa
+INa_PYso_B12(X,mNa,hNa) = -phiM*gNa.*mNa.^3.*hNa.*(X-ENa)
 
-% Note that the below doesn't contain any voltages. This is
-%     analogous to the corresponding part of `g1_SOMA` in the original code:
-cond_Na_PYso_B02(X,mNa,hNa) = phiM*gNa.*mNa.^3.*hNa
-
-monitor curr_Na_PYso_B02
-monitor cond_Na_PYso_B02
+monitor curr_Na_PYso_B12
+monitor cond_Na_PYso_B12
 
 % ODEs and ICs
 mNa' = (Minf(X)-mNa)./tauM(X)
@@ -83,5 +74,4 @@ hNa' = (Hinf(X)-hNa)./tauH(X)
 hNa(0)=hNaIC+hNaNoiseIC.*rand(1, Npop)
 
 % Interface
-@current += curr_Na_PYso_B02(X,mNa,hNa)
-@conductance += cond_Na_PYso_B02(X,mNa,hNa)
+@current += INa_PYso_B12(X,mNa,hNa)

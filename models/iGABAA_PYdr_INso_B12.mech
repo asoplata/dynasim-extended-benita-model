@@ -1,8 +1,8 @@
-% # iGABAA_PYdr_INso_B02: Normalized synaptic GABA-Aergic inhibitory
+% # iGABAA_PYdr_INso_B12: Normalized synaptic GABA-Aergic inhibitory
 %     current, with synaptic depression and minis, FROM the interneuron
-%     axo-soma TO pyramidal dendrite PYdr<-INso_B02 connection used in the
+%     axo-soma TO pyramidal dendrite PYdr<-INso_B12 connection used in the
 %     DynaSim implementation of (Bazhenov et al., 2002). Note that in the
-%     original code, the class for this current is called GABA_A_D2, INso_B02
+%     original code, the class for this current is called GABA_A_D2, INso_B12
 %     compartments are called CX, IN, or CX_SOMA, and PYdr compartments are
 %     called CX or CX_DEND. Also note that, instead of using a Heaviside
 %     increase in transmitter concentration upon spike detection, we used the
@@ -57,13 +57,13 @@ Rinf = 0.72
 
 miniFreq = 20 % in Hz
 % This is used both for comparing floats the correct way in
-%     `IMiniGABAA_PYdr_INso_B02_read`, and as a minimum in the
+%     `IMiniGABAA_PYdr_INso_B12_read`, and as a minimum in the
 %     `newReleaseUpdate` function.
 epsilon = 0.000001
 
 % In the original code, this sleep stage experimental factor is represented by
 %     `fac_GABA_D2`
-fac_MiniGABAA_PYdr_INso_B02 = 1
+fac_MiniGABAA_PYdr_INso_B12 = 1
 
 % This is our DynaSim-varied, cell-type-NONspecific adjustment factor
 fac_GABAA_cort_large_vary = 0
@@ -83,7 +83,7 @@ beta  = 0.25 % ms^-1
 
 % In the original code, this sleep stage experimental factor is represented by
 %     `fac_GABA_D2`
-fac_GABAA_PYdr_INso_B02 = 1
+fac_GABAA_PYdr_INso_B12 = 1
 
 % This is our DynaSim-varied, cell-type-NONspecific adjustment factor
 fac_GABAA_cort_large_vary = 0
@@ -127,22 +127,22 @@ checkTime(t,lastRelease,lastReleaseOne,newRelease) = ((t-lastReleaseOne)>70).*((
 
 
 % Unfortunately, due to the way DynaSim works, the "lastRelease" state variable
-%     is updated AFTER the current function "IMiniGABAA_PYdr_INso_B02" is used
+%     is updated AFTER the current function "IMiniGABAA_PYdr_INso_B12" is used
 %     in the dv/dt of the target cell, but BEFORE the monitors are calculated.
 %     And because lastRelease is not a "true" state variable in the biophysical
 %     sense, but instead a "hack" for us to track the last mini time, we have
 %     to use DIFFERENT time checks (therefore two different functions) for how
 %     the minis affect the simulation, vs how we actually read out the minis'
 %     contribution themselves. Hence, for data visualization purposes, we only
-%     need to monitor "IMiniGABAA_PYdr_INso_B02_read".
+%     need to monitor "IMiniGABAA_PYdr_INso_B12_read".
 % In other words, this is the function actually used in the simulation:
-IMiniGABAA_PYdr_INso_B02(X,t,sMini,depr) = (-((fac_MiniGABAA_PYdr_INso_B02+fac_GABAA_cort_large_vary).*propofolMiniCondMult.*gMiniGABAA/normalizingFactor).*(depr.*sMini)*netcon).*(X-EGABAA)
+IMiniGABAA_PYdr_INso_B12(X,t,sMini,depr) = (-((fac_MiniGABAA_PYdr_INso_B12+fac_GABAA_cort_large_vary).*propofolMiniCondMult.*gMiniGABAA/normalizingFactor).*(depr.*sMini)*netcon).*(X-EGABAA)
 
-IGABAA_PYdr_INso_B02(X,s,depr) = -(fac_GABAA_PYdr_INso_B02+fac_GABAA_cort_large_vary)*propofolCondMult*gGABAA/normalizingFactor.*((depr.*s)*netcon).*(X-EGABAA)
+IGABAA_PYdr_INso_B12(X,s,depr) = -(fac_GABAA_PYdr_INso_B12+fac_GABAA_cort_large_vary)*propofolCondMult*gGABAA/normalizingFactor.*((depr.*s)*netcon).*(X-EGABAA)
 
 % This way we record the synaptic currents!
-monitor IMiniGABAA_PYdr_INso_B02
-monitor IGABAA_PYdr_INso_B02
+monitor IMiniGABAA_PYdr_INso_B12
+monitor IGABAA_PYdr_INso_B12
 
 
 % ODEs and ICs
@@ -188,4 +188,4 @@ depr' = (((t-lastRelease-0.3-1)>0).*(X_pre>0).*(((1 - (1 - depr.*(1-resUse)).*ex
 depr(0) = deprGABAAIC+deprGABAANoiseIC*rand(1,N_pre)
 
 % Linker
-@current += IGABAA_PYdr_INso_B02(X_post,s,depr) + IMiniGABAA_PYdr_INso_B02(X_post,t,sMini,depr)
+@current += IGABAA_PYdr_INso_B12(X_post,s,depr) + IMiniGABAA_PYdr_INso_B12(X_post,t,sMini,depr)

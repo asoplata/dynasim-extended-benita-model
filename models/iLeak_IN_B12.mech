@@ -1,12 +1,11 @@
-% # iLeak_PYdr_B02: Chloride/general Leak current, Hodgkin-Huxley-style, for
-%     generic pyramidal dendrite compartments used in the DynaSim
+% # iLeak_IN_B12: Chloride/general Leak current, Hodgkin-Huxley-style, for
+%     generic interneuron dendrite compartments used in the DynaSim
 %     implementation of (Bazhenov et al., 2002). Note that in the original
-%     code, this compartment/cell type is called CX or CX_DEND, and this
-%     current is defined using `G_l` and `E_l`.
+%     code, this compartment/cell type is called CX, CX_DEND, and sometimes IN,
+%     and this current is defined using `G_l` and `E_l`.
 %
 % - Source: This was built from the original paper's code, using "currents.h"
-%     lines 1200, 1211, "CellSyn.h" lines 125 and 127, and "currents.cpp" line
-%     1066.
+%     lines 1200, 1211, "CellSyn.h" line 173, and "currents.cpp" line 1066.
 %
 % - References:
 %     - Bazhenov M, Timofeev I, Steriade M, Sejnowski TJ. Model of thalamocortical
@@ -17,17 +16,16 @@
 %         slow oscillation. The Journal of Physiology. 2012;590: 3987–4010.
 %         doi:10.1113/jphysiol.2012.227462
 %
-% - Tags: potassium, leak, current, intrinsic, pyramidal, dendrite
+% - Tags: potassium, leak, current, intrinsic, interneuron, dendrite
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters
-% gLeak = 0.033 % mS/cm^2
-gLeak = (1e3)/30000 % mS/cm^2
-ELeak = -68   % mV
+gLeak = 0.1025 % mS/cm^2
+ELeak = -63.8  % mV
 
 % Functions
-ILeak_PYdr_B02(X) = -gLeak.*(X-ELeak)
+ILeak_IN_B12(X) = -gLeak.*(X-ELeak)
 
-monitor ILeak_PYdr_B02
+monitor ILeak_IN_B12
 
 % Linker
-@current += ILeak_PYdr_B02(X)
+@current += ILeak_IN_B12(X)

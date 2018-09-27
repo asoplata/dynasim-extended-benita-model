@@ -1,4 +1,4 @@
-% # iAMPA_INdr_PYso_B02: Normalized synaptic AMPAergic excitatory current,
+% # iAMPA_INdr_PYso_B12: Normalized synaptic AMPAergic excitatory current,
 %     with synaptic depression and minis, FROM the pyramidal axo-soma TO
 %     interneuron dendrite INdr<-PYso connection used in the DynaSim
 %     implementation of (Bazhenov et al., 2002). Note that in the original
@@ -56,8 +56,8 @@ miniFreq = 20 % in Hz
 epsilon = 0.000001
 
 % These are our experimental adjustment factors
-fac_AMPA_INdr_PYso_B02 = 1
-fac_MiniAMPA_INdr_PYso_B02 = 1
+fac_AMPA_INdr_PYso_B12 = 1
+fac_MiniAMPA_INdr_PYso_B12 = 1
 
 % This is our DynaSim-varied, cell-type-NONspecific adjustment factor
 fac_AMPA_cort_large_vary = 0
@@ -103,12 +103,12 @@ netcon = netconNearestNeighbors(2*radius, N_pre, N_post, removeRecurrentBool)
 % last mini
 checkTime(t,lastRelease,lastReleaseOne,newRelease) = ((t-lastReleaseOne)>70).*((t-lastRelease)>newRelease)
 
-IMiniAMPA_INdr_PYso_B02(X,t,sMini,depr) = (-((fac_MiniAMPA_INdr_PYso_B02+fac_AMPA_cort_large_vary).*gMiniAMPA/normalizingFactor).*(depr.*sMini)*netcon).*(X-EAMPA)
+IMiniAMPA_INdr_PYso_B12(X,t,sMini,depr) = (-((fac_MiniAMPA_INdr_PYso_B12+fac_AMPA_cort_large_vary).*gMiniAMPA/normalizingFactor).*(depr.*sMini)*netcon).*(X-EAMPA)
 
-IAMPA_INdr_PYso_B02(X,s,depr) = -(fac_AMPA_INdr_PYso_B02+fac_AMPA_cort_large_vary)*gAMPA/normalizingFactor.*((depr.*s)*netcon).*(X-EAMPA)
+IAMPA_INdr_PYso_B12(X,s,depr) = -(fac_AMPA_INdr_PYso_B12+fac_AMPA_cort_large_vary)*gAMPA/normalizingFactor.*((depr.*s)*netcon).*(X-EAMPA)
 
-monitor IMiniAMPA_INdr_PYso_B02
-monitor IAMPA_INdr_PYso_B02
+monitor IMiniAMPA_INdr_PYso_B12
+monitor IAMPA_INdr_PYso_B12
 
 % ODEs and ICs
 % This represents the amount of synaptic resources available
@@ -148,5 +148,5 @@ sMini' = alpha.*(((t-lastMini)<0.3)*Rinf).*(1-sMini) - beta.*sMini
 sMini(0) = sAMPAMiniIC+sAMPANoiseMiniIC.*rand(1,N_pre)
 
 % Linker
-@current += IAMPA_INdr_PYso_B02(X_post,s,depr) + IMiniAMPA_INdr_PYso_B02(X_post,t,sMini,depr)
+@current += IAMPA_INdr_PYso_B12(X_post,s,depr) + IMiniAMPA_INdr_PYso_B12(X_post,t,sMini,depr)
 
