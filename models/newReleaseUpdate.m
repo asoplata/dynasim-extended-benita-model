@@ -3,7 +3,7 @@ function output = newReleaseUpdate(timeSinceSpike, miniFreq, epsilon, N_pre)
 %
 % This function is how we calculate new values of the state variable
 % `newRelease` for the 'Mini'-type synaptic mechanisms in the DynaSim
-% implementations of (Bazhenov et al., 2002) and (Krishnan et al., 2016). This
+% implementations of (Benita et al., 2012) and (Krishnan et al., 2016). This
 % is similar to the original code in the Krishnan code "currents.cpp" lines
 % 520-524. This needs to be in an external function for simplification of the
 % many checks required for this.

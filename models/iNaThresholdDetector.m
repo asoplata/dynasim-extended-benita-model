@@ -1,11 +1,11 @@
 function rateValue = iNaThresholdDetector(v, thr, a, q)
 %INATHRESHOLDDETECTOR - Change iNa behavior if there is a nonlinearity
 %
-% This changes the axo-somatic and dendrite iNa (iNa_PYso, iNa_PYdr, iNa_INso,
-% iNa_INdr) current behavior when it would otherwise go to infinity /
+% This changes the axo-somatic and dendrite iNa (iNa_PYso, iNa_PYdr, iNa_IN,
+% iNa_IN) current behavior when it would otherwise go to infinity /
 % divide-by-zero. It is taken from the `trap0` of the original code for (Mainen
 % & Sejnowski, 1996) file "cells/na.mod" lines 24-25 and 185-191 (which were
-% updated in 2007 to correct a bug), NOT (Bazhenov et al., 2002).
+% updated in 2007 to correct a bug), NOT (Benita et al., 2012).
 %
 % - References:
 %     - Bazhenov M, Timofeev I, Steriade M, Sejnowski TJ. Model of thalamocortical
