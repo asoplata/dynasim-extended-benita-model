@@ -1,9 +1,8 @@
-% # iLeak_PYdr_B12:
+% # iLeak_PYso_B12:
 %
 % Chloride/general Leak current, Hodgkin-Huxley-style, for generic pyramidal
-% dendrite compartments used in the DynaSim implementation of (Benita et al.,
-% 2012). Note that in the original code, this compartment/cell type is called
-% CX or CX_DEND, and this current is defined using `G_l` and `E_l`.
+% somatic compartments used in the DynaSim implementation of (Benita et al.,
+% 2012).
 %
 % - References:
 %     - Benita, J. M., Guillamon, A., Deco, G., & Sanchez-Vives, M. V. (2012).
@@ -11,16 +10,16 @@
 %     network model of the cerebral cortex. Frontiers in Computational
 %     Neuroscience, 6. https://doi.org/10.3389/fncom.2012.00064
 %
-% - Tags: potassium, leak, current, intrinsic, pyramidal, dendrite
+% - Tags: potassium, leak, current, intrinsic, pyramidal, soma
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters
-gLeak = 0.0667 % mS/cm^2
+gLeak = 0.0667 % mS/cm^2, +- 0.0067
 ELeak = -60.95 % mV
 
 % Functions
-ILeak_PYdr_B12(X) = -gLeak.*(X-ELeak)
+ILeak_PYso_B12(X) = -gLeak.*(X-ELeak)
 
-monitor ILeak_PYdr_B12
+monitor ILeak_PYso_B12
 
 % Linker
-@current += ILeak_PYdr_B12(X)
+@current += ILeak_PYso_B12(X)

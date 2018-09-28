@@ -2,10 +2,7 @@
 %
 % High-threshold Calcium current, Hodgkin-Huxley-style, for generic pyramidal
 % dendrite compartments used in the DynaSim implementation of (Benita et al.,
-% 2012). Note that in the original code, this compartment/cell type is called
-% CX or CX_DEND, and this current is called IHVA_CX, while in the paper it is
-% called ICa. Additionally, the ICa identifier in the original code refers to
-% the calcium buffer concentration dynamics, NOT the calcium current.
+% 2012). Note that this is called "iCa" in the original paper.
 %
 % - References:
 %     - Benita, J. M., Guillamon, A., Deco, G., & Sanchez-Vives, M. V. (2012).
@@ -18,40 +15,18 @@
 % - Tags: calcium, current, intrinsic, pyramidal, dendrite
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters
-gHVA = 0.01 % mS/cm^2
-% In the original code, this is `E_Ca`
-EHVA = 140   % mV
-% The Q10 temperature adjustment values never change over the course of the
-%     simulations, so we are setting them to be constant.
-phiM = 2.3^((36-23)/10)
-phiH = 2.3^((36-23)/10)
+gHVA = 0.43 % mS/cm^2
+EHVA = 120  % mV
 
-mHVAIC = 0.34
-mHVANoiseIC = 0.1
-hHVAIC = 0.1
-hHVANoiseIC = 0.1
+phi = 1 % temperature factor
 
 % Functions
-alphaM(X) = 0.055.*(-27 - X)./(exp((-27 - X)./3.8) - 1)
-betaM(X) = 0.94.*exp((-75 - X)./17)
-tauM(X) = (1./(alphaM(X) + betaM(X)))./phiM
-Minf(X) = alphaM(X)./(alphaM(X) + betaM(X))
-
-alphaH(X) = 0.000457.*exp((-13 - X)./50)
-betaH(X) = 0.0065./(exp((-X - 15)./28) + 1)
-tauH(X) = (1./(alphaH(X) + betaH(X)))./phiH
-Hinf(X) = alphaH(X)./(alphaH(X) + betaH(X))
+Minf(X) = 1./(1 + exp(-(X+20)./9))
 
 % Note: For why the current term was not made negative, see below.
-IHVA_PYdr_B12(X,mHVA,hHVA) = phiM*gHVA.*mHVA.^2.*hHVA.*(X-EHVA)
+IHVA_PYdr_B12(X) = gHVA.*Minf(X).^2.*(X-EHVA)
 
 monitor IHVA_PYdr_B12
-
-% ODEs and ICs
-mHVA' = (Minf(X)-mHVA)./tauM(X)
-mHVA(0)=mHVAIC+mHVANoiseIC.*rand(1,Npop)
-hHVA' = (Hinf(X)-hHVA)./tauH(X)
-hHVA(0)=hHVAIC+hHVANoiseIC.*rand(1,Npop)
 
 % Interface
 % Note: Usually in DynaSim, the current is made negative before being assigned

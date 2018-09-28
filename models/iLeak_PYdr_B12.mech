@@ -13,7 +13,7 @@
 % - Tags: potassium, leak, current, intrinsic, pyramidal, dendrite
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters
-gLeak = 0.0667 % mS/cm^2
+gLeak = 0.0667 % mS/cm^2, +- 0.0067
 ELeak = -60.95 % mV
 
 % Functions
