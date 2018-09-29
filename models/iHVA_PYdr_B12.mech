@@ -18,8 +18,6 @@
 gHVA = 0.43 % mS/cm^2
 EHVA = 120  % mV
 
-phi = 1 % temperature factor
-
 % Functions
 Minf(X) = 1./(1 + exp(-(X+20)./9))
 

@@ -2,13 +2,11 @@
 %
 % Calcium buffer concentration dynamics, for generic pyramidal dendrite
 % compartments used in the DynaSim implementation of (Benita et al., 2012).
-% Note that in the original code, this compartment/cell type is called CX or
-% CX_DEND, and this mechanism is identified as ICa, even though it is not a
-% current.
+%
+% - Note: This CaBuffer produces calcium in concentations of uM, not mM
 %
 % - Requires:
-%     - "@IHVA_PYdr_B12" exposed by "IHVA_PYdr_B12" mechanism (which is called
-%     "IHVA_CX", NOT ICa, in the original code).
+%     - "@IHVA_PYdr_B12" exposed by "IHVA_PYdr_B12" mechanism
 %
 % - Exposes:
 %     - calcium concentration "@CaBuffer_PYdr_B12" required for "iKCa_PYdr_B12"
@@ -23,18 +21,16 @@
 % - Tags: calcium, intrinsic, pyramidal, dendrite
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters
-tauR = 165       % ms
-Ca_inf = 0.00024 % mM of calcium, aka 2.4e-4
-D = 1            % unitless conversion factor, unclear purpose
-% See (Chen et al., 2012) Equation 5:
-A = 10/(2*96489) % mM cm^2/(ms uA) drive conversion of Ca-modifying currents
+tauCa = 150 % ms
+alphaCa = 0.005 % uM/(nA ms) drive conversion of Ca-modifying currents
+areaDR = 0.00035 % Area of dendrite, 0.035 mm^2 = 0.00035 cm^2
+
 CaBufferIC = 0.000001
 CaBufferNoiseIC = 0.0001
 
 % ODEs
-% In original code, the CaBuffer requires input from IHVA, but CaBuffer is only
-%     used by IKCa
-CaBuffer_PYdr_B12' = max(-A.*@IHVA_PYdr_B12./D, 0) + (Ca_inf - CaBuffer_PYdr_B12)./tauR
+% CaBuffer requires input from IHVA, but CaBuffer is only used by IKCa
+CaBuffer_PYdr_B12' = max(-alphaCa.*areaDR.*@IHVA_PYdr_B12, 0) - CaBuffer_PYdr_B12./tauCa
 CaBuffer_PYdr_B12(0) = CaBufferIC+CaBufferNoiseIC.*rand(1,Npop)
 
 % Interface
