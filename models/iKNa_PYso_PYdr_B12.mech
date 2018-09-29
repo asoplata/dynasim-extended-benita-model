@@ -1,0 +1,201 @@
+% # iAMPA_PYdr_PYso_B12:
+%
+% Normalized synaptic AMPAergic excitatory current, with synaptic depression
+% and minis, FROM the pyramidal axo-soma TO pyramidal dendrite PYdr<-PYso_B12
+% connection used in the DynaSim implementation of (Benita et al., 2012). Note
+% that in the original code, the class for this current is called AMPA_D2,
+% PYso_B12 are called CX or CX_SOMA, and PYdr are called CX or CX_DEND. Also
+% note that, instead of using a Heaviside increase in transmitter concentration
+% upon spike detection, we used the (1 + tanh(V/4)) formulation from
+% (Ermentrout & Kopell, 1998) for our spike detector and transmitter
+% concentration model.
+%
+% - Dependencies:
+%     - netconNearestNeighbors.m
+%     - newReleaseUpdate.m
+%
+% - References:
+%     - Benita, J. M., Guillamon, A., Deco, G., & Sanchez-Vives, M. V. (2012).
+%     Synaptic depression and slow oscillatory activity in a biophysical
+%     network model of the cerebral cortex. Frontiers in Computational
+%     Neuroscience, 6. https://doi.org/10.3389/fncom.2012.00064
+%
+% - Tags: synapse, connection, excitation, ampa
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameters
+gAMPA =     0.9       % mS/cm^2
+gMiniAMPA = 0.363636  % mS/cm^2
+EAMPA = 0 % mV
+
+% Initial conditions
+deprAMPAIC = 1
+deprAMPANoiseIC = 0
+laRelIC = 0
+laRelNoiseIC = 0
+laRelOneIC = 0
+laRelOneNoiseIC = 0
+laMiniIC = -10000
+laMiniNoiseIC = 0
+neMiniIC = 75
+neMiniNoiseIC = 20
+sAMPAIC = 0
+sAMPANoiseIC = 0
+sAMPAMiniIC = 0
+sAMPANoiseMiniIC = 0
+
+% This is a proportionality coefficient for ensuring our 0.5*(1+tanh(V/4))
+% spike detection produces the same increase in the synaptic activity variable
+% as the original code.
+Rinf = 0.72
+
+% This is roughly a term for how often the minis are firing, based on the original code
+miniFreq = 20 % in Hz
+
+% This is used as a minimum in the `newReleaseUpdate` function.
+epsilon = 0.000001
+
+% These are our experimental adjustment factors
+fac_MiniAMPA_PYdr_PYso_B12 = 1
+fac_AMPA_PYdr_PYso_B12 = 1
+
+% This is our DynaSim-varied, cell-type-NONspecific adjustment factor
+fac_AMPA_cort_large_vary = 0
+
+% Note that alpha rate here corresponds to the inverse of the rise  time constant, 1/tauR, and
+%        the beta rate here corresponds to the inverse of the decay time constant, 1/tauD
+alpha = 0.94  % ms^-1
+beta  = 0.18 % ms^-1
+
+% Synaptic depression parameters:
+% The proportion of total "resources" used in each action potential
+% In the original code, this is `Use`
+resUse = 0.073  % unitless
+resUseMini = 0  % unitless
+% In the original code, this is `Tr`
+tauRecov = 700 % in ms
+
+% Connectivity
+% Connective radius, aka how many target cells each source cell connects to,
+%     from the source's perspective.
+radius = 5
+
+% Remove autapses to the dendrite corresponding to this soma
+removeRecurrentBool = 1
+% We also need to normalize the conductance in mS/cm^2 by the number of
+%     connections each target cell is receiving on average, so that the TOTAL sum
+%     of their conductive inputs adds to our overall maximal conductance above.
+normalizingFactor = min(((2*radius + (1-removeRecurrentBool)) / (N_post/N_pre)), N_pre)
+
+% Note that what is passed is 2x the radius
+netcon = netconNearestNeighbors(2*radius, N_pre, N_post, removeRecurrentBool)
+
+% Functions
+% This checks for if there has been enough time since the last spike AND the
+% last mini
+checkTime(t,lastRelease,lastReleaseOne,newRelease) = ((t-lastReleaseOne)>70).*((t-lastRelease)>newRelease)
+
+IMiniAMPA_PYdr_PYso_B12(X,t,sMini,depr) = (-((fac_MiniAMPA_PYdr_PYso_B12+fac_AMPA_cort_large_vary).*gMiniAMPA/normalizingFactor).*(depr.*sMini)*netcon).*(X-EAMPA)
+
+IAMPA_PYdr_PYso_B12(X,s,depr) = -(fac_AMPA_PYdr_PYso_B12+fac_AMPA_cort_large_vary)*gAMPA/normalizingFactor.*((depr.*s)*netcon).*(X-EAMPA)
+
+% This way we record the synaptic currents!
+monitor IMiniAMPA_PYdr_PYso_B12
+monitor IAMPA_PYdr_PYso_B12
+
+% ODEs and ICs
+% This represents the amount of synaptic resources available
+depr' = (((t-lastRelease-0.3-1)>0).*(X_pre>0).*(((1 - (1 - depr.*(1-resUse)).*exp(-(t-lastReleaseOne-0.3-1)./tauRecov))-depr))./dt) + ((t-lastRelease-0.3-1)>0).*checkTime(t,lastRelease,lastReleaseOne,newRelease).*(((1 - (1 - depr.*(1-resUseMini)).*(abs(-(t-lastReleaseOne)/tauRecov)<10).*exp(-(t-lastReleaseOne)./tauRecov))-depr)./dt)
+depr(0) = deprAMPAIC+deprAMPANoiseIC*rand(1,N_pre)
+
+% The "state" of the lastMini state variable is the ACTUAL time of the
+% last mini only
+lastMini' = ((t-lastRelease)>newRelease).*((t - lastMini)./dt)
+lastMini(0) = laMiniIC+laMiniNoiseIC.*rand(1,N_pre)
+% The "state" of the lastRelease state variable is the ACTUAL time of the
+% previous mini OR spike
+lastRelease' = ((t-lastRelease-0.3-1)>0).*checkTime(t,lastRelease,lastReleaseOne,newRelease).*((t - lastRelease)./dt) + ((t-lastRelease-0.3-1)>0).*(X_pre>0).*((t - lastRelease)./dt)
+lastRelease(0) = laRelIC+laRelNoiseIC.*rand(1,N_pre)
+% The "state" of the lastReleaseOne state variable is the ACTUAL time of the
+% previous spike only
+lastReleaseOne' = ((t-lastReleaseOne-0.3-1)>0).*(X_pre>0).*((t - lastReleaseOne)./dt)
+lastReleaseOne(0) = laRelOneIC+laRelOneNoiseIC.*rand(1,N_pre)
+
+% The "state" of the newRelease state variable is a random minimum AMOUNT of
+%     time until the next mini can happen for that synapse. (This is where the
+%     magic happens)
+% Note that `checkTime` is an internal function defined above, but
+%     `newReleaseUpdate` is an external function defined in
+%     `newReleaseUpdate.m`.
+newRelease' = checkTime(t,lastRelease,lastReleaseOne,newRelease).*((newReleaseUpdate((t-lastReleaseOne),miniFreq,epsilon,N_pre) - newRelease)./dt)
+newRelease(0) = neMiniIC+neMiniNoiseIC.*rand(1,N_pre)
+
+% This is the synaptic activity variable
+s' = alpha.*Rinf.*0.5.*(1 + tanh(X_pre./4)).*(1-s) - beta.*s
+s(0) = sAMPAIC+sAMPANoiseIC.*rand(1,N_pre)
+
+% This is a similar synaptic activity variable just for the minis (since
+% (1+tanh) only works if there is an actual presynaptic spike, which is not
+% required for a mini to go off)
+sMini' = alpha.*(((t-lastMini)<0.3)*Rinf).*(1-sMini) - beta.*sMini
+sMini(0) = sAMPAMiniIC+sAMPANoiseMiniIC.*rand(1,N_pre)
+
+% Linker
+@current += IAMPA_PYdr_PYso_B12(X_post,s,depr) + IMiniAMPA_PYdr_PYso_B12(X_post,t,sMini,depr)
+
+
+
+% Parameters
+gNaP = 0.0686 % mS/cm^2
+ENaP = 55  % mV
+
+% Functions
+Minf(X) = 1./(1 + exp(-(X+55.7)./7.7))
+
+INaP_PYdr_B12(X) = -gNaP.*Minf(X).^3.*(X-ENaP)
+
+monitor INaP_PYdr_B12
+
+
+% # iKNa_PYso_B12:
+%
+% Sodium-dependent potassium current, for generic pyramidal soma compartments used
+% in the DynaSim implementation of (Benita et al., 2012). The original paper
+% constructs this mechanism from (Bischoff et al., 1998), (Li et al., 1996),
+% (Liu, 1999), and (Wang et al., 2002).
+%
+% - References:
+%     - Benita, J. M., Guillamon, A., Deco, G., & Sanchez-Vives, M. V. (2012).
+%     Synaptic depression and slow oscillatory activity in a biophysical
+%     network model of the cerebral cortex. Frontiers in Computational
+%     Neuroscience, 6. https://doi.org/10.3389/fncom.2012.00064
+%     - TODO
+%     - TODO
+%     - TODO
+%     - TODO
+%
+% - Tags: potassium, current, intrinsic, pyramidal, soma
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameters
+gKNa = 1.33 % mS/cm^2
+EKNa = -100 % mV, same as potassium reversal potential
+
+concNaIC = 0.0001
+concNaNoiseIC = 0
+
+alphaNa = 0.01 % mM / (nA * ms)
+RPump = 0.018  % mM / ms
+eqNa = 9.5     % mM
+
+% Functions
+IKNa_PYso_PYdr_B12(X,concNa) = gKNa.*(0.37./(1 + (38.7./concNa).^3.5)).*(X-EKNa)
+
+monitor IKNa_PYso_B12
+
+% ODEs and ICs
+hA' = (Hinf(X) - hA)./tauH
+hA(0)=hAIC+hANoiseIC.*rand(1, Npop)
+
+concNa' = 
+
+% Interface
+@current += IKNa_PYso_PYdr_B12(X,concNa)
