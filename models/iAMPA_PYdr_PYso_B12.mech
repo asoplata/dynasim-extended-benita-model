@@ -129,15 +129,19 @@ lastReleaseOne(0) = laRelOneIC+laRelOneNoiseIC.*rand(1,N_pre)
 newRelease' = checkTime(t,lastRelease,lastReleaseOne,newRelease).*((newReleaseUpdate((t-lastReleaseOne),miniFreq,epsilon,N_pre) - newRelease)./dt)
 newRelease(0) = neMiniIC+neMiniNoiseIC.*rand(1,N_pre)
 
-% This is the synaptic activity variable
-s' = alpha.*Rinf.*0.5.*(1 + tanh(X_pre./4)).*(1-s) - beta.*s
+
+
+alpha = 3.48
+tauS = 2 % ms
+deprFactor = 0.9
+
+% This is the synaptic activity state variable
+s' = alpha./(1 + exp(-(X_pre-20)./2)) - s./tauS
 s(0) = sAMPAIC+sAMPANoiseIC.*rand(1,N_pre)
 
-% This is a similar synaptic activity variable just for the minis (since
-% (1+tanh) only works if there is an actual presynaptic spike, which is not
-% required for a mini to go off)
-sMini' = alpha.*(((t-lastMini)<0.3)*Rinf).*(1-sMini) - beta.*sMini
-sMini(0) = sAMPAMiniIC+sAMPANoiseMiniIC.*rand(1,N_pre)
+% This is the resources state variable
+res' = (1 - res)./tauRes + ((t-tspike_pre)<=dt).*(-(1 - res)./tauRes + (deprFactor.*res - res)./dt
+% TODO add poisson
 
 % Linker
 @current += IAMPA_PYdr_PYso_B12(X_post,s,depr) + IMiniAMPA_PYdr_PYso_B12(X_post,t,sMini,depr)
