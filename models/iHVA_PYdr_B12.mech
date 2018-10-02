@@ -27,9 +27,10 @@ IHVA_PYdr_B12(X) = gHVA.*Minf(X).^2.*(X-EHVA)
 monitor IHVA_PYdr_B12
 
 % Interface
-% Note: Usually in DynaSim, the current is made negative before being assigned
-%     to a linker, but in this case, the below is less confusing since exposing
-%     IHVA_PYdr_B12 for the CaBuffer_PYdr_B12 mechanism requires a
-%     not-made-negative version of IHVA_PYdr_B12.
+% Note: Usually in DynaSim, the current is made negative
+% before being assigned to a linker, but in this case, the
+% below is less confusing since exposing IHVA_PYdr_B12 for the
+% CaBuffer_PYdr_B12 mechanism requires a not-made-negative
+% version of IHVA_PYdr_B12.
 @current += -IHVA_PYdr_B12(X,mHVA,hHVA)
 @IHVA_PYdr_B12 += IHVA_PYdr_B12(X,mHVA,hHVA)

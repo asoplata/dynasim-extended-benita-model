@@ -1,4 +1,4 @@
-% # iNaCurrs_PYso_PYdr_B12:
+% # iKNa_PYso_PYdr_B12:
 %
 % Sodium-dependent potassium current, for generic pyramidal soma compartments
 % used in the DynaSim implementation of (Benita et al., 2012). This is
@@ -19,38 +19,6 @@
 %
 % - Tags: potassium, current, intrinsic, pyramidal, soma
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Local INa_PYso_B12 section
-% Parameters
-gNa = 50 % mS/cm^2
-ENa = 55 % mV
-phi = 4 % temperature factor
-hNaIC = 1.0
-hNaNoiseIC = -0.01
-% Functions
-alphaM(X) = 0.1.*(X+33)./(1-exp(-(X+33)./10))
-betaM(X) =  4.*exp(-(X+53.7)./12)
-MinfNa(X) = alphaM(X)./(alphaM(X) + betaM(X))
-alphaH(X) = 0.07.*exp(-(X+50)./10)
-betaH(X) =  1./(1+exp(-(X+20)./10))
-% Note the negative here, in contrast to in the original mechanism
-INa_PYso_local(X,hNa) = -gNa.*MinfNa(X).^3.*hNa.*(X-ENa)
-
-% ODEs and ICs
-hNa' = phi.*((alphaH(X_post).*(1-hNa)) - (betaH(X_post).*hNa))
-hNa(0)=hNaIC+hNaNoiseIC.*rand(1, Npop)
-
-
-% Local INaP_PYdr_B12 section
-% Parameters
-gNaP = 0.0686 % mS/cm^2
-ENaP = 55  % mV
-% Functions
-MinfNaP(X) = 1./(1 + exp(-(X+55.7)./7.7))
-% Note the negative here, in contrast to in the original mechanism
-INaP_PYdr_local(X) = -gNaP.*MinfNaP(X).^3.*(X-ENaP)
-
-
-% KNa section
 % Parameters
 gKNa = 1.33 % mS/cm^2
 EKNa = -100 % mV, same as potassium reversal potential
@@ -67,15 +35,13 @@ eqNaPumpTerm = eqNa^3 / (eqNa^3 + 15^3)
 netcon = eye(N_pre,N_post)
 
 % Functions
-IKNa_PYso_PYdr_B12(X,concNa) = -gKNa.*(0.37./(1 + (38.7./concNa).^3.5))*netcon.*(X-EKNa)
+IKNa_PYso_PYdr_B12(X,concNa) = gKNa.*(0.37./(1 + (38.7./concNa).^3.5))*netcon.*(X-EKNa)
 
-monitor INa_PYso_local
-monitor INaP_PYdr_local
 monitor IKNa_PYso_PYdr_B12
 
 % ODEs and ICs
-concNa' = -alphaNa.*(0.00015.*INa_PYso_local(X_post,hNa) + 0.00035.*INaP_PYdr_local(X_pre)) - RPump.*(concNa.^3./(concNa.^3+15^3) - eqNaPumpTerm)
+concNa' = -alphaNa.*(0.00015.*@INa_PYso_B12_post + 0.00035.*@INaP_PYdr_B12_pre) - RPump.*(concNa.^3./(concNa.^3+15^3) - eqNaPumpTerm)
 concNa(0) = concNaIC+concNaNoiseIC.*rand(1,N_pre)
 
 % Interface
-@current += IKNa_PYso_PYdr_B12(X_post,concNa)
+@current += IKNa_PYso_PYdr_B12(X,concNa)
