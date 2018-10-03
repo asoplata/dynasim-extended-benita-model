@@ -1,18 +1,11 @@
 % # iAMPA_PYdr_PYso_B12:
 %
 % Normalized synaptic AMPAergic excitatory current, with synaptic depression
-% and minis, FROM the pyramidal axo-soma TO pyramidal dendrite PYdr<-PYso_B12
-% connection used in the DynaSim implementation of (Benita et al., 2012). Note
-% that in the original code, the class for this current is called AMPA_D2,
-% PYso_B12 are called CX or CX_SOMA, and PYdr are called CX or CX_DEND. Also
-% note that, instead of using a Heaviside increase in transmitter concentration
-% upon spike detection, we used the (1 + tanh(V/4)) formulation from
-% (Ermentrout & Kopell, 1998) for our spike detector and transmitter
-% concentration model.
+% and minis, FROM the pyramidal axo-soma TO pyramidal dendrite PYdr<-PYso
+% connection used in the DynaSim implementation of (Benita et al., 2012).
 %
 % - Dependencies:
 %     - netconNearestNeighbors.m
-%     - newReleaseUpdate.m
 %
 % - References:
 %     - Benita, J. M., Guillamon, A., Deco, G., & Sanchez-Vives, M. V. (2012).
