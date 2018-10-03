@@ -23,61 +23,22 @@
 % - Tags: synapse, connection, excitation, ampa
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters
-gAMPA =     0.9       % mS/cm^2
-gMiniAMPA = 0.363636  % mS/cm^2
+gAMPA = 0.0154       % mS/cm^2
+% gMiniAMPA = 0.363636  % mS/cm^2
 EAMPA = 0 % mV
 
-% Initial conditions
-deprAMPAIC = 1
-deprAMPANoiseIC = 0
-laRelIC = 0
-laRelNoiseIC = 0
-laRelOneIC = 0
-laRelOneNoiseIC = 0
-laMiniIC = -10000
-laMiniNoiseIC = 0
-neMiniIC = 75
-neMiniNoiseIC = 20
-sAMPAIC = 0
+alpha = 3.48
+tauS = 2 % ms
+deprFactor = 0.9
+tauRes = 400 % ms
+
+sAMPAIC = 0.0
 sAMPANoiseIC = 0
-sAMPAMiniIC = 0
-sAMPANoiseMiniIC = 0
-
-% This is a proportionality coefficient for ensuring our 0.5*(1+tanh(V/4))
-% spike detection produces the same increase in the synaptic activity variable
-% as the original code.
-Rinf = 0.72
-
-% This is roughly a term for how often the minis are firing, based on the original code
-miniFreq = 20 % in Hz
-
-% This is used as a minimum in the `newReleaseUpdate` function.
-epsilon = 0.000001
-
-% These are our experimental adjustment factors
-fac_MiniAMPA_PYdr_PYso_B12 = 1
-fac_AMPA_PYdr_PYso_B12 = 1
-
-% This is our DynaSim-varied, cell-type-NONspecific adjustment factor
-fac_AMPA_cort_large_vary = 0
-
-% Note that alpha rate here corresponds to the inverse of the rise  time constant, 1/tauR, and
-%        the beta rate here corresponds to the inverse of the decay time constant, 1/tauD
-alpha = 0.94  % ms^-1
-beta  = 0.18 % ms^-1
-
-% Synaptic depression parameters:
-% The proportion of total "resources" used in each action potential
-% In the original code, this is `Use`
-resUse = 0.073  % unitless
-resUseMini = 0  % unitless
-% In the original code, this is `Tr`
-tauRecov = 700 % in ms
 
 % Connectivity
 % Connective radius, aka how many target cells each source cell connects to,
 %     from the source's perspective.
-radius = 5
+radius = 10
 
 % Remove autapses to the dendrite corresponding to this soma
 removeRecurrentBool = 1
@@ -89,59 +50,19 @@ normalizingFactor = min(((2*radius + (1-removeRecurrentBool)) / (N_post/N_pre)),
 % Note that what is passed is 2x the radius
 netcon = netconNearestNeighbors(2*radius, N_pre, N_post, removeRecurrentBool)
 
+
 % Functions
-% This checks for if there has been enough time since the last spike AND the
-% last mini
-checkTime(t,lastRelease,lastReleaseOne,newRelease) = ((t-lastReleaseOne)>70).*((t-lastRelease)>newRelease)
+IAMPA_PYdr_PYso_B12(X,s,rec) = -gAMPA/normalizingFactor.*((res.*sAMPA)*netcon).*(X-EAMPA)
 
-IMiniAMPA_PYdr_PYso_B12(X,t,sMini,depr) = (-((fac_MiniAMPA_PYdr_PYso_B12+fac_AMPA_cort_large_vary).*gMiniAMPA/normalizingFactor).*(depr.*sMini)*netcon).*(X-EAMPA)
-
-IAMPA_PYdr_PYso_B12(X,s,depr) = -(fac_AMPA_PYdr_PYso_B12+fac_AMPA_cort_large_vary)*gAMPA/normalizingFactor.*((depr.*s)*netcon).*(X-EAMPA)
-
-% This way we record the synaptic currents!
-monitor IMiniAMPA_PYdr_PYso_B12
 monitor IAMPA_PYdr_PYso_B12
 
-% ODEs and ICs
-% This represents the amount of synaptic resources available
-depr' = (((t-lastRelease-0.3-1)>0).*(X_pre>0).*(((1 - (1 - depr.*(1-resUse)).*exp(-(t-lastReleaseOne-0.3-1)./tauRecov))-depr))./dt) + ((t-lastRelease-0.3-1)>0).*checkTime(t,lastRelease,lastReleaseOne,newRelease).*(((1 - (1 - depr.*(1-resUseMini)).*(abs(-(t-lastReleaseOne)/tauRecov)<10).*exp(-(t-lastReleaseOne)./tauRecov))-depr)./dt)
-depr(0) = deprAMPAIC+deprAMPANoiseIC*rand(1,N_pre)
-
-% The "state" of the lastMini state variable is the ACTUAL time of the
-% last mini only
-lastMini' = ((t-lastRelease)>newRelease).*((t - lastMini)./dt)
-lastMini(0) = laMiniIC+laMiniNoiseIC.*rand(1,N_pre)
-% The "state" of the lastRelease state variable is the ACTUAL time of the
-% previous mini OR spike
-lastRelease' = ((t-lastRelease-0.3-1)>0).*checkTime(t,lastRelease,lastReleaseOne,newRelease).*((t - lastRelease)./dt) + ((t-lastRelease-0.3-1)>0).*(X_pre>0).*((t - lastRelease)./dt)
-lastRelease(0) = laRelIC+laRelNoiseIC.*rand(1,N_pre)
-% The "state" of the lastReleaseOne state variable is the ACTUAL time of the
-% previous spike only
-lastReleaseOne' = ((t-lastReleaseOne-0.3-1)>0).*(X_pre>0).*((t - lastReleaseOne)./dt)
-lastReleaseOne(0) = laRelOneIC+laRelOneNoiseIC.*rand(1,N_pre)
-
-% The "state" of the newRelease state variable is a random minimum AMOUNT of
-%     time until the next mini can happen for that synapse. (This is where the
-%     magic happens)
-% Note that `checkTime` is an internal function defined above, but
-%     `newReleaseUpdate` is an external function defined in
-%     `newReleaseUpdate.m`.
-newRelease' = checkTime(t,lastRelease,lastReleaseOne,newRelease).*((newReleaseUpdate((t-lastReleaseOne),miniFreq,epsilon,N_pre) - newRelease)./dt)
-newRelease(0) = neMiniIC+neMiniNoiseIC.*rand(1,N_pre)
-
-
-
-alpha = 3.48
-tauS = 2 % ms
-deprFactor = 0.9
-
 % This is the synaptic activity state variable
-s' = alpha./(1 + exp(-(X_pre-20)./2)) - s./tauS
-s(0) = sAMPAIC+sAMPANoiseIC.*rand(1,N_pre)
+sAMPA' = alpha./(1 + exp(-(X_pre-20)./2)) - sAMPA./tauS
+sAMPA(0) = sAMPAIC+sAMPANoiseIC.*rand(1,N_pre)
 
 % This is the resources state variable
-res' = (1 - res)./tauRes + ((t-tspike_pre)<=dt).*(-(1 - res)./tauRes + (deprFactor.*res - res)./dt
+res' = (1 - res)./tauRes + ((t-tspike_pre)<=dt).*(-(1 - res)./tauRes + (deprFactor.*res - res)./dt)
 % TODO add poisson
 
 % Linker
-@current += IAMPA_PYdr_PYso_B12(X_post,s,depr) + IMiniAMPA_PYdr_PYso_B12(X_post,t,sMini,depr)
+@current += IAMPA_PYdr_PYso_B12(X_post,s,res)

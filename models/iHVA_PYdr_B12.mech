@@ -32,5 +32,5 @@ monitor IHVA_PYdr_B12
 % below is less confusing since exposing IHVA_PYdr_B12 for the
 % CaBuffer_PYdr_B12 mechanism requires a not-made-negative
 % version of IHVA_PYdr_B12.
-@current += -IHVA_PYdr_B12(X,mHVA,hHVA)
-@IHVA_PYdr_B12 += IHVA_PYdr_B12(X,mHVA,hHVA)
+@current += -IHVA_PYdr_B12(X)
+@IHVA_PYdr_B12 += IHVA_PYdr_B12(X)

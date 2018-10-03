@@ -20,9 +20,9 @@ EKCa = -100 % mV
 KD = 30 % uM
 
 % Functions
-IKCa_PYdr_B12(X) = -gKCa.*@CaBuffer_PYdr_B12./(@CaBuffer_PYdr_B12 + KD).*(X-EKCa)
+IKCa_PYdr_B12(X,CaBuffer_PYdr_B12) = -gKCa.*(@CaBuffer_PYdr_B12)./(@CaBuffer_PYdr_B12 + KD).*(X-EKCa)
 
-monitor IKCa_PYdr_B12
+% monitor IKCa_PYdr_B12
 
 % Interface
-@current += IKCa_PYdr_B12(X)
+@current += IKCa_PYdr_B12(X,CaBuffer_PYdr_B12)
