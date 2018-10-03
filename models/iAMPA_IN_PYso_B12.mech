@@ -36,6 +36,8 @@ tauRes = 400 % ms
 
 sAMPAIC = 0.0
 sAMPANoiseIC = 0
+resIC = 1
+resNoiseIC = 0
 
 % Connectivity
 % Connective radius, aka how many target cells each source cell connects
@@ -65,6 +67,7 @@ sAMPA(0) = sAMPAIC+sAMPANoiseIC.*rand(1,N_pre)
 
 % This is the resources state variable
 res' = (1 - res)./tauRes + ((t-tspike_pre)<=dt).*(-(1 - res)./tauRes + (deprFactor.*res - res)./dt)
+res(0) = resIC-resNoiseIC.*rand(1,N_pre)
 % TODO add poisson
 
 % Linker

@@ -76,5 +76,7 @@ end
 % Note: This WILL break if it is used on populations of different sizes
 % AES: removed the former `exist` check since `exist` breaks MEX code gen
 if removeRecurrentBool
-  netcon = netcon - diag(diag(netcon));
+  % netcon = netcon - diag(diag(netcon));
+  % AES: Below should work for both square and non-square matrices
+  netcon = netcon - eye(size(netcon))
 end

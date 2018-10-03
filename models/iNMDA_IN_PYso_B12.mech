@@ -35,6 +35,8 @@ tauX = 2 % ms
 deprFactor = 0.9
 tauRes = 400 % ms
 
+resIC = 1
+resNoiseIC = 0
 sNMDAIC = 0.0
 sNMDANoiseIC = 0
 xNMDAIC = 0.0
@@ -71,6 +73,7 @@ xNMDA(0) = xNMDAIC+xNMDANoiseIC.*rand(1,N_pre)
 
 % This is the resources state variable
 res' = (1 - res)./tauRes + ((t-tspike_pre)<=dt).*(-(1 - res)./tauRes + (deprFactor.*res - res)./dt)
+res(0) = resIC-resNoiseIC.*rand(1,N_pre)
 % TODO add poisson
 
 % Linker

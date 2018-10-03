@@ -66,14 +66,14 @@ dt = 0.01; % in milliseconds
 %   decrease the population sizes to 50 PYso's and PYdr's, 10 INso's and 
 %   INdr's, 10 TC's, and 10 TRN's.
 % numCellsScaledownFactor = 1;
-numCellsScaledownFactor = 0.05;
+numCellsScaledownFactor = 0.1;
 
 % "Vary" parameters, aka parameters to be varied -- this tells DynaSim to run a
 %   simulation for all combinations of values. For a tutorial on how to use
 %   this, see
 %   https://github.com/DynaSim/DynaSim/wiki/DynaSim-Getting-Started-Tutorial#running-sets-of-simulations-by-varying-model-parameters
 vary={
-'PYdr', 'appliedStim', 100;
+'PYdr', 'appliedStim', 0;
 % 'PYdr', 'appliedStim', [0,1,2];
 };
 
