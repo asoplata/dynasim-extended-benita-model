@@ -73,7 +73,7 @@ numCellsScaledownFactor = 0.05;
 %   this, see
 %   https://github.com/DynaSim/DynaSim/wiki/DynaSim-Getting-Started-Tutorial#running-sets-of-simulations-by-varying-model-parameters
 vary={
-'PYdr', 'appliedStim', 3;
+'PYdr', 'appliedStim', 100;
 % 'PYdr', 'appliedStim', [0,1,2];
 };
 
