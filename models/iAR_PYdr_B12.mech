@@ -20,7 +20,7 @@ EAR = -100   % mV
 % Functions
 Hinf(X) = 1./(1 + exp((X+75)./4))
 
-IAR_PYdr_B12(X) = gAR.*Hinf(X).*(X-EAR)
+IAR_PYdr_B12(X) = -gAR.*Hinf(X).*(X-EAR)
 
 monitor IAR_PYdr_B12
 

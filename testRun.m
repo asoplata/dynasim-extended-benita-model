@@ -73,8 +73,11 @@ numCellsScaledownFactor = 0.1;
 %   this, see
 %   https://github.com/DynaSim/DynaSim/wiki/DynaSim-Getting-Started-Tutorial#running-sets-of-simulations-by-varying-model-parameters
 vary={
-'PYdr', 'appliedStim', 0;
-% 'PYdr', 'appliedStim', [0,1,2];
+% 'PYso', 'appliedStim', 1.67;
+% % 'PYso', 'appliedStim', 50;
+% 'PYdr', 'appliedStim', 1.0;
+% 'IN',   'appliedStim', 1.25;
+% % % 'PYdr', 'appliedStim', [0,1,2];
 };
 
 % Here is where we set simulator options specific to `dsSimulate`, which are
@@ -147,21 +150,21 @@ spec = assembleTestSpec(dt, numCellsScaledownFactor);
 
 dsPlot(data);
 
-figure(10)
-subplot 211
-plot(data.time, data.PYso_PYdr_iNaCurrs_PYso_PYdr_B12_concNa)
-ylabel('concNa')
-subplot 212
-plot(data.time, data.PYso_PYdr_iNaCurrs_PYso_PYdr_B12_IKNa_PYso_PYdr_B12)
-ylabel('IKNa')
-
-figure(11)
-subplot 311
-plot(data.time, data.PYdr_PYso_iAMPA_PYdr_PYso_B12_res)
-ylabel('res')
-subplot 312
-plot(data.time, data.PYdr_PYso_iAMPA_PYdr_PYso_B12_sAMPA)
-ylabel('sAMPA')
-subplot 313
-plot(data.time, data.PYdr_PYso_iAMPA_PYdr_PYso_B12_IAMPA_PYdr_PYso_B12)
-ylabel('IAMPA')
+% figure(10)
+% subplot 211
+% plot(data.time, data.PYso_PYdr_iNaCurrs_PYso_PYdr_B12_concNa)
+% ylabel('concNa')
+% subplot 212
+% plot(data.time, data.PYso_PYdr_iNaCurrs_PYso_PYdr_B12_IKNa_PYso_PYdr_B12)
+% ylabel('IKNa')
+% 
+% figure(11)
+% subplot 311
+% plot(data.time, data.PYdr_PYso_iAMPA_PYdr_PYso_B12_res)
+% ylabel('res')
+% subplot 312
+% plot(data.time, data.PYdr_PYso_iAMPA_PYdr_PYso_B12_sAMPA)
+% ylabel('sAMPA')
+% subplot 313
+% plot(data.time, data.PYdr_PYso_iAMPA_PYdr_PYso_B12_IAMPA_PYdr_PYso_B12)
+% ylabel('IAMPA')

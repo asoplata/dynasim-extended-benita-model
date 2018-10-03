@@ -78,5 +78,5 @@ end
 if removeRecurrentBool
   % netcon = netcon - diag(diag(netcon));
   % AES: Below should work for both square and non-square matrices
-  netcon = netcon - eye(size(netcon))
+  netcon = netcon - eye(size(netcon));
 end

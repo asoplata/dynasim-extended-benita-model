@@ -26,7 +26,7 @@ hANoiseIC = 1
 Minf(X) = 1./(1 - exp(-(X+50)./20))
 Hinf(X) = 1./(1 + exp((X+80)./6))
 
-IA_PYso_B12(X,hA) = gA.*Minf(X).^3.*hA.*(X-EA)
+IA_PYso_B12(X,hA) = -gA.*Minf(X).^3.*hA.*(X-EA)
 
 monitor IA_PYso_B12
 

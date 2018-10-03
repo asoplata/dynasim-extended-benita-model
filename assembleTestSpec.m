@@ -41,7 +41,7 @@ eqns={
   'spike_threshold = -25'
   'monitor v.spikes(spike_threshold, 1)'
   'vIC = -68'    % mV
-  'vNoiseIC = 10' % mV
+  'vNoiseIC = 0' % mV
   'v(0) = vIC+vNoiseIC*rand(1,Npop)'
 };
 
@@ -80,7 +80,6 @@ specification.connections(1).mechanism_list={...
     'iCOM_PYso_PYdr_B12',...
     'iNaCurrs_PYso_PYdr_B12',...
     };
-%    'iKNa_PYso_PYdr_B12',...
 specification.connections(2).direction='PYdr<-PYso';
 specification.connections(2).mechanism_list={...
     'iCOM_PYdr_PYso_B12',...
@@ -101,53 +100,13 @@ specification.populations(3).mechanism_list={...
 % PY<->IN connections/synapses
 specification.connections(3).direction='IN<-PYso';
 specification.connections(3).mechanism_list={...
-    'iAMPA_IN_PYso_B12'};%,...
-%     'iNMDA_IN_PYso_B12'};
+    'iAMPA_IN_PYso_B12',...
+    'iNMDA_IN_PYso_B12'};
 
-% specification.connections(4).direction='PYso<-IN';
-% specification.connections(4).mechanism_list={...
-%     'iGABAA_PYso_IN_B12'};
-% 
-% specification.connections(5).direction='IN<-IN';
-% specification.connections(5).mechanism_list={...
-%     'iGABAA_IN_IN_B12'};
+specification.connections(4).direction='PYso<-IN';
+specification.connections(4).mechanism_list={...
+    'iGABAA_PYso_IN_B12'};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+specification.connections(5).direction='IN<-IN';
+specification.connections(5).mechanism_list={...
+    'iGABAA_IN_IN_B12'};

@@ -51,12 +51,15 @@ removeRecurrentBool = 1
 % maximal conductance above.
 normalizingFactor = min(((2*radius + (1-removeRecurrentBool)) / (N_post/N_pre)), N_pre)
 
+
 % Note that what is passed is 2x the radius
 netcon = netconNearestNeighbors(2*radius, N_pre, N_post, removeRecurrentBool)
 
 
 % Functions
+% AES
 IGABAA_PYso_IN_B12(X,sGABAA,rec) = -gGABAA/normalizingFactor.*((res.*sGABAA)*netcon).*(X-EGABAA)
+% IGABAA_PYso_IN_B12(X,sGABAA,rec) = -gGABAA.*(sGABAA*netcon).*(X-EGABAA)
 
 monitor IGABAA_PYso_IN_B12
 

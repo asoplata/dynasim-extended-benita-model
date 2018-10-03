@@ -20,12 +20,17 @@
 % the total current, 1.75 +- 0.1 uS, by 'A_d', the area of the dendrite, in
 % order to get a per-area conductance, which is what DynaSim prefers.
 %
-%   1.75 uS / 0.035 mm^2 = 5 mS/cm^2
+% 1.75 uS / 0.035 mm^2 * ...
+% 1 mS / 1000 uS * ...
+% 100 mm^2 / 1 cm^2 = ...
+% 5.0 mS/cm^2
 gCOM=5
 
 % Functions
 % Note that this is the same as -gCOM * (Vdr - Vso)
+% AES
 ICOM_PYdr_PYso_B12(IN,OUT) = -gCOM.*(OUT-IN)
+% ICOM_PYdr_PYso_B12(IN,OUT) = gCOM.*(IN-OUT)
 
 % Linkers
 @current += ICOM_PYdr_PYso_B12(IN,OUT)

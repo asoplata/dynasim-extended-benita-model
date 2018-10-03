@@ -25,7 +25,7 @@ mKSNoiseIC = 1
 Minf(X) = 1./(1 + exp(-(X+34)./6.5))
 tauM(X) = 8./(exp(-(X+55)./30) + exp((X+55)./30))
 
-IKS_PYso_B12(X,mKS) = gKS.*mKS.^3.*(X-EKS)
+IKS_PYso_B12(X,mKS) = -gKS.*mKS.^3.*(X-EKS)
 
 monitor IKS_PYso_B12
 

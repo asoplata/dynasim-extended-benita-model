@@ -33,7 +33,7 @@ MinfNa(X) = alphaM(X)./(alphaM(X) + betaM(X))
 alphaH(X) = 0.07.*exp(-(X+50)./10)
 betaH(X) =  1./(1+exp(-(X+20)./10))
 % Note the negative here, in contrast to in the original mechanism
-INa_PYso_local(X,hNa) = -gNa.*MinfNa(X).^3.*hNa.*(X-ENa)
+INa_PYso_local(X,hNa) = gNa.*MinfNa(X).^3.*hNa.*(X-ENa)
 
 % ODEs and ICs
 hNa' = phi.*((alphaH(X_post).*(1-hNa)) - (betaH(X_post).*hNa))
@@ -47,7 +47,7 @@ ENaP = 55  % mV
 % Functions
 MinfNaP(X) = 1./(1 + exp(-(X+55.7)./7.7))
 % Note the negative here, in contrast to in the original mechanism
-INaP_PYdr_local(X) = -gNaP.*MinfNaP(X).^3.*(X-ENaP)
+INaP_PYdr_local(X) = gNaP.*MinfNaP(X).^3.*(X-ENaP)
 
 
 % KNa section
