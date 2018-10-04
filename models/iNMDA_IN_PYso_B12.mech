@@ -63,7 +63,7 @@ netcon = netconNearestNeighbors(2*radius, N_pre, N_post, removeRecurrentBool)
 % Functions
 % AES
 INMDA_IN_PYso_B12(X,sNMDA,rec) = -gNMDA/normalizingFactor.*((res.*sNMDA)*netcon).*(X-ENMDA)
-% INMDA_IN_PYso_B12(X,sNMDA,rec) = -gNMDA.*(sNMDA*netcon).*(X-ENMDA)
+% INMDA_IN_PYso_B12(X,sNMDA,rec) = -gNMDA/normalizingFactor.*(sNMDA*netcon).*(X-ENMDA)
 
 monitor INMDA_IN_PYso_B12
 

@@ -60,7 +60,7 @@ netcon = netconNearestNeighbors(2*radius, N_pre, N_post, removeRecurrentBool)
 % Functions
 % AES
 IAMPA_PYdr_PYso_B12(X,sAMPA,rec) = -gAMPA/normalizingFactor.*((res.*sAMPA)*netcon).*(X-EAMPA)
-% IAMPA_PYdr_PYso_B12(X,sAMPA,rec) = -gAMPA.*(sAMPA*netcon).*(X-EAMPA)
+% IAMPA_PYdr_PYso_B12(X,sAMPA,rec) = -gAMPA/normalizingFactor.*(sAMPA*netcon).*(X-EAMPA)
 
 monitor IAMPA_PYdr_PYso_B12
 
