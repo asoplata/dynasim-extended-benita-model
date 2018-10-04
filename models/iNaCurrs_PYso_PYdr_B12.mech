@@ -24,8 +24,8 @@
 gNa = 50 % mS/cm^2
 ENa = 55 % mV
 phi = 4 % temperature factor
-hNaIC = 1.0
-hNaNoiseIC = -0.01
+hNaIC = 0.0
+hNaNoiseIC = 0.01
 % Functions
 alphaM(X) = 0.1.*(X+33)./(1-exp(-(X+33)./10))
 betaM(X) =  4.*exp(-(X+53.7)./12)
@@ -55,10 +55,12 @@ INaP_PYdr_local(X) = gNaP.*MinfNaP(X).^3.*(X-ENaP)
 gKNa = 1.33 % mS/cm^2
 EKNa = -100 % mV, same as potassium reversal potential
 
-concNaIC = 0.0001
+concNaIC = 10
 concNaNoiseIC = 0
 
-alphaNa = 0.01 % mM / (nA * ms)
+% AES
+% alphaNa = 0.01 % mM / (nA * ms)
+alphaNa = 0.01*1000 % mM / (uA * ms)
 RPump = 0.018  % mM / ms
 eqNa = 9.5     % mM
 eqNaPumpTerm = eqNa^3 / (eqNa^3 + 15^3)

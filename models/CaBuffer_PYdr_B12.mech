@@ -22,7 +22,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters
 tauCa = 150 % ms
-alphaCa = 0.005 % uM/(nA ms) drive conversion of Ca-modifying currents
+% AES
+% alphaCa = 0.005 % uM/(nA ms) drive conversion of Ca-modifying currents
+alphaCa = 0.005*1000 % uM/(uA ms) drive conversion of Ca-modifying currents
 areaDR = 0.00035 % Area of dendrite, 0.035 mm^2 = 0.00035 cm^2
 
 CaBufferIC = 0.000001

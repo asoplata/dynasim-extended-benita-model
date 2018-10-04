@@ -23,7 +23,7 @@ hAIC = 0
 hANoiseIC = 1
 
 % Functions
-Minf(X) = 1./(1 - exp(-(X+50)./20))
+Minf(X) = 1./(1 + exp(-(X+50)./20))
 Hinf(X) = 1./(1 + exp((X+80)./6))
 
 IA_PYso_B12(X,hA) = -gA.*Minf(X).^3.*hA.*(X-EA)

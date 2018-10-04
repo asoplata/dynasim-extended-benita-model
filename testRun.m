@@ -52,7 +52,7 @@ study_dir = mfilename;
 % study_dir = strcat('/projectnb/crc-nak/asoplata/p25-anesthesia-grant-sim-data/', mfilename);
 
 % This is where you set the length of your simulation, in ms
-time_end = 1000; % in milliseconds
+time_end = 4000; % in milliseconds
 
 % While DynaSim uses a default `dt` of 0.01 ms, we must specify ours explicitly
 %   since `dt` is actually used to construct our model directly.
@@ -73,11 +73,13 @@ numCellsScaledownFactor = 0.1;
 %   this, see
 %   https://github.com/DynaSim/DynaSim/wiki/DynaSim-Getting-Started-Tutorial#running-sets-of-simulations-by-varying-model-parameters
 vary={
+'PYso', 'appliedStim', 0.1;
+'PYdr', 'appliedStim', 0.1;
+'IN',   'appliedStim', 0.1;
 % 'PYso', 'appliedStim', 1.67;
-% % 'PYso', 'appliedStim', 50;
 % 'PYdr', 'appliedStim', 1.0;
 % 'IN',   'appliedStim', 1.25;
-% % % 'PYdr', 'appliedStim', [0,1,2];
+% % 'PYdr', 'appliedStim', [0,1,2];
 };
 
 % Here is where we set simulator options specific to `dsSimulate`, which are
@@ -151,6 +153,10 @@ spec = assembleTestSpec(dt, numCellsScaledownFactor);
 dsPlot(data);
 
 % figure(10)
+% plot(data.time, data.PYso_v)
+
+
+% figure(10)
 % subplot 211
 % plot(data.time, data.PYso_PYdr_iNaCurrs_PYso_PYdr_B12_concNa)
 % ylabel('concNa')
@@ -168,3 +174,15 @@ dsPlot(data);
 % subplot 313
 % plot(data.time, data.PYdr_PYso_iAMPA_PYdr_PYso_B12_IAMPA_PYdr_PYso_B12)
 % ylabel('IAMPA')
+% 
+% figure(20)
+% subplot 511
+% plot(data.time, data.PYso_PYdr_iNaCurrs_PYso_PYdr_B12_concNa)
+% subplot 512
+% plot(data.time, data.PYso_PYdr_iNaCurrs_PYso_PYdr_B12_hNa)
+% subplot 513
+% plot(data.time, data.PYso_PYdr_iNaCurrs_PYso_PYdr_B12_INa_PYso_local)
+% subplot 514
+% plot(data.time, data.PYso_PYdr_iNaCurrs_PYso_PYdr_B12_INaP_PYdr_local)
+% subplot 515
+% plot(data.time, data.PYso_PYdr_iNaCurrs_PYso_PYdr_B12_IKNa_PYso_PYdr_B12)
