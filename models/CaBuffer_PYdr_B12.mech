@@ -22,13 +22,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters
 tauCa = 150 % ms
-% AES
-% alphaCa = 0.005 % uM/(nA ms) drive conversion of Ca-modifying currents
+% We must multiply by 1000 to convert 1/nA to 1/uA, since all the rest of our
+% equations use uA:
 alphaCa = 0.005*1000 % uM/(uA ms) drive conversion of Ca-modifying currents
 areaDR = 0.00035 % Area of dendrite, 0.035 mm^2 = 0.00035 cm^2
 
-CaBufferIC = 0.000001
-CaBufferNoiseIC = 0.0001
+CaBufferIC = 0.001
+CaBufferNoiseIC = 0.01
 
 % ODEs
 % CaBuffer requires input from IHVA, but CaBuffer is only used by IKCa

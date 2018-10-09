@@ -22,6 +22,8 @@ KD = 30 % uM
 % Functions
 IKCa_PYdr_B12(X,CaBuffer_PYdr_B12) = -gKCa.*(@CaBuffer_PYdr_B12)./(@CaBuffer_PYdr_B12 + KD).*(X-EKCa)
 
+% AES: Don't monitor this current, since there is currently a bug when
+% monitoring functions that directly use linked variables, it seems.
 % monitor IKCa_PYdr_B12
 
 % Interface

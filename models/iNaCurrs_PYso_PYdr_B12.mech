@@ -12,10 +12,21 @@
 %     Synaptic depression and slow oscillatory activity in a biophysical
 %     network model of the cerebral cortex. Frontiers in Computational
 %     Neuroscience, 6. https://doi.org/10.3389/fncom.2012.00064
-%     - TODO
-%     - TODO
-%     - TODO
-%     - TODO
+%     - Bischoff, U., Vogel, W., & Safronov, B. V. (1998). Na+-activated K+
+%     channels in small dorsal root ganglion neurones of rat. The Journal of
+%     Physiology, 510 ( Pt 3), 743–754. Retrieved from
+%     https://www.ncbi.nlm.nih.gov/pubmed/9660890
+%     - Li, Y. X., Bertram, R., & Rinzel, J. (1996). Modeling
+%     N-methyl-D-aspartate-induced bursting in dopamine neurons. Neuroscience,
+%     71(2), 397–410. Retrieved from
+%     https://www.ncbi.nlm.nih.gov/pubmed/9053795
+%     - Liu Y. Dynamics of Cortical Neuronal Activity Across Multiple Temporal
+%     Scales: From Sensory Adaptation to Working Memory (PhD thesis). Waltham,
+%     MA: Brandeis University
+%     - Wang, X.-J., Liu, Y., Sanchez-Vives, M. V., & McCormick, D. A. (2003).
+%     Adaptation and temporal decorrelation by single neurons in the primary
+%     visual cortex. Journal of Neurophysiology, 89(6), 3279–3293.
+%     https://doi.org/10.1152/jn.00242.2003
 %
 % - Tags: potassium, current, intrinsic, pyramidal, soma
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -25,7 +36,7 @@ gNa = 50 % mS/cm^2
 ENa = 55 % mV
 phi = 4 % temperature factor
 hNaIC = 0.0
-hNaNoiseIC = 0.01
+hNaNoiseIC = 0.1
 % Functions
 alphaM(X) = 0.1.*(X+33)./(1-exp(-(X+33)./10))
 betaM(X) =  4.*exp(-(X+53.7)./12)
@@ -55,11 +66,11 @@ INaP_PYdr_local(X) = gNaP.*MinfNaP(X).^3.*(X-ENaP)
 gKNa = 1.33 % mS/cm^2
 EKNa = -100 % mV, same as potassium reversal potential
 
-concNaIC = 10
-concNaNoiseIC = 0
+concNaIC = 5
+concNaNoiseIC = 3
 
-% AES
-% alphaNa = 0.01 % mM / (nA * ms)
+% We must multiply by 1000 to convert 1/nA to 1/uA, since all the rest of our
+% equations use uA:
 alphaNa = 0.01*1000 % mM / (uA * ms)
 RPump = 0.018  % mM / ms
 eqNa = 9.5     % mM

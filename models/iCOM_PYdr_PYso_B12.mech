@@ -1,11 +1,8 @@
 % # iCOM_PYdr_PYso_B12:
 %
 % Simple ohmic axial current for connecting FROM PY cell axo-somatic
-% compartments TO PY cell dendritic compartments PYdr<-PYso_B12 used in the
-% DynaSim implementation of (Benita et al., 2012). Note that in the original
-% code, this cell type is called CX, and the compartments are called CX_DEND or
-% CX_SOMA. This mechanism should be used twice, once for dendrite to soma, and
-% once for soma to dendrite.
+% compartments TO PY cell dendritic compartments PYdr<-PYso used in the
+% DynaSim implementation of (Benita et al., 2012).
 %
 % - References:
 %     - Benita, J. M., Guillamon, A., Deco, G., & Sanchez-Vives, M. V. (2012).
@@ -24,13 +21,11 @@
 % 1 mS / 1000 uS * ...
 % 100 mm^2 / 1 cm^2 = ...
 % 5.0 mS/cm^2
+%
 gCOM=5
 
 % Functions
-% Note that this is the same as -gCOM * (Vdr - Vso)
-% AES
 ICOM_PYdr_PYso_B12(IN,OUT) = -gCOM.*(OUT-IN)
-% ICOM_PYdr_PYso_B12(IN,OUT) = gCOM.*(IN-OUT)
 
 % Linkers
 @current += ICOM_PYdr_PYso_B12(IN,OUT)

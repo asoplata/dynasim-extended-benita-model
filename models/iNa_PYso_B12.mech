@@ -20,8 +20,8 @@ ENa = 55 % mV
 
 phi = 4 % temperature factor
 
-hNaIC = 1.0
-hNaNoiseIC = -0.01
+hNaIC = 0.0
+hNaNoiseIC = 0.1
 
 % Functions
 alphaM(X) = 0.1.*(X+33)./(1-exp(-(X+33)./10))

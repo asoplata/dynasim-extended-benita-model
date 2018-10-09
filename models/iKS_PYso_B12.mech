@@ -9,7 +9,10 @@
 %     Synaptic depression and slow oscillatory activity in a biophysical
 %     network model of the cerebral cortex. Frontiers in Computational
 %     Neuroscience, 6. https://doi.org/10.3389/fncom.2012.00064
-%     - TODO
+%     - Wang, X. J. (1999). Fast burst firing and short-term synaptic
+%     plasticity: a model of neocortical chattering neurons. Neuroscience,
+%     89(2), 347–362. Retrieved from
+%     https://www.ncbi.nlm.nih.gov/pubmed/10077318
 %
 % - Tags: potassium, current, intrinsic, pyramidal, soma
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -19,7 +22,7 @@ EKS = -100 % mV, same as potassium reversal potential
 
 phi = 1 % temperature factor
 mKSIC = 0
-mKSNoiseIC = 1
+mKSNoiseIC = 0.2
 
 % Functions
 Minf(X) = 1./(1 + exp(-(X+34)./6.5))

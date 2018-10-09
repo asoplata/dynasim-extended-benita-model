@@ -22,7 +22,7 @@ EK = -100 % mV
 phi = 4 % temperature factor
 
 nKIC = 0.0
-nKNoiseIC = 0.0
+nKNoiseIC = 0.2
 
 % Functions
 alphaN(X) = 0.01.*(X+34)./(1 - exp(-(X+34)./10))

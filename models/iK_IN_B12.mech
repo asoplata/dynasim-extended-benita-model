@@ -16,7 +16,7 @@ gK = 9   % mS/cm^2
 EK = -90 % mV
 
 nKIC = 0.0
-nKNoiseIC = 0.0
+nKNoiseIC = 0.2
 
 % Functions
 alphaN(X) = 0.05.*(X+34)./(1 - exp(-(X+34)./10))

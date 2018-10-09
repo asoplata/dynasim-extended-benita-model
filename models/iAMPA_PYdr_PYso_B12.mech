@@ -25,9 +25,7 @@
 % 1 mS / 1000000 nS * 100 mm^2 / 1 cm^2 = ...
 % 0.0154 mS/cm^2
 %
-gAMPA = 0.0154       % mS/cm^2
-% TODO
-% gMiniAMPA = 0.363636  % mS/cm^2
+gAMPA = 0.0154 % mS/cm^2
 EAMPA = 0 % mV
 
 alpha = 3.48
@@ -36,9 +34,9 @@ deprFactor = 0.9
 tauRes = 400 % ms
 
 sAMPAIC = 0.0
-sAMPANoiseIC = 0
+sAMPANoiseIC = 0.1
 resIC = 1
-resNoiseIC = 0
+resNoiseIC = 0.1
 
 % Connectivity
 % Connective radius, aka how many target cells each source cell connects
@@ -58,9 +56,7 @@ netcon = netconNearestNeighbors(2*radius, N_pre, N_post, removeRecurrentBool)
 
 
 % Functions
-% AES
 IAMPA_PYdr_PYso_B12(X,sAMPA,rec) = -gAMPA/normalizingFactor.*((res.*sAMPA)*netcon).*(X-EAMPA)
-% IAMPA_PYdr_PYso_B12(X,sAMPA,rec) = -gAMPA/normalizingFactor.*(sAMPA*netcon).*(X-EAMPA)
 
 monitor IAMPA_PYdr_PYso_B12
 
@@ -71,7 +67,6 @@ sAMPA(0) = sAMPAIC+sAMPANoiseIC.*rand(1,N_pre)
 % This is the resources state variable
 res' = (1 - res)./tauRes + ((t-tspike_pre)<=dt).*(-(1 - res)./tauRes + (deprFactor.*res - res)./dt)
 res(0) = resIC-resNoiseIC.*rand(1,N_pre)
-% TODO add poisson
 
 % Linker
 @current += IAMPA_PYdr_PYso_B12(X_post,sAMPA,res)

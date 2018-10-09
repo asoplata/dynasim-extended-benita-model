@@ -1,15 +1,15 @@
-%RUNBAZHENOVMODEL - Run the DynaSim implementation of the (Bazhenov et al., 2002) model!
+%RUNBENITAMODEL - Run the DynaSim implementation of the (Benita et al., 2012) model!
 %{
 This is a starter script to show both how to use the DynaSim mechanisms I've
-made for simulating the (Bazhenov et al., 2002) model in Dynasim, available
-here (https://github.com/asoplata/dynasim-bazhenov-2002-model) while also
+made for simulating the (Benita et al., 2012) model in Dynasim, available
+here (https://github.com/asoplata/dynasim-benita-2012-model) while also
 giving you a good skeleton to start experimenting yourself.
 
 - Install:
   1. Install DynaSim (https://github.com/DynaSim/DynaSim/wiki/Installation),
      including adding it to your MATLAB path.
   2. `git clone` or download this code's repo
-     (https://github.com/asoplata/dynasim-bazhenov-2002-model) into
+     (https://github.com/asoplata/dynasim-benita-2012-model) into
      '/your/path/to/dynasim/models', i.e. the 'models' subdirectory of your
      copy of the DynaSim repo.
   3. Run this file.
@@ -19,19 +19,20 @@ giving you a good skeleton to start experimenting yourself.
      'dot' com
 
 - Notes:
-  - The default model is rather large, so you may wish to decrease the
-    `numCellScaledownFactor` variable to decrease the size of your model.
-  - Due to the complexity of the synaptic mechanisms, this REQUIRES that you
-    only use EULER integration for solving the ODE system. In the future, other
-    integration methods may be supported.
+    - The default model is rather large, so you may wish to decrease the
+      `numCellScaledownFactor` variable to decrease the size of your model.
+    - Due to the complexity of the synaptic mechanisms, this REQUIRES that you
+      only use EULER integration for solving the ODE system. In the future, other
+      integration methods may be supported.
 
 - Dependencies:
-  - This has only been tested on MATLAB version 2017a.
+    - This has only been tested on MATLAB version 2017a.
 
 - References:
-  - Bazhenov M, Timofeev I, Steriade M, Sejnowski TJ. Model of thalamocortical
-    slow-wave sleep oscillations and transitions to activated states. The
-    Journal of Neuroscience. 2002;22: 8691–8704.
+    - Benita, J. M., Guillamon, A., Deco, G., & Sanchez-Vives, M. V. (2012).
+    Synaptic depression and slow oscillatory activity in a biophysical
+    network model of the cerebral cortex. Frontiers in Computational
+    Neuroscience, 6. https://doi.org/10.3389/fncom.2012.00064
 
 This is descended from DynaSim's `tutorial.m` script, at
 https://github.com/DynaSim/DynaSim/blob/master/demos/tutorial.m
@@ -44,47 +45,47 @@ Copyright (C) 2018 Austin E. Soplata, Boston University, USA
 %% 1. Define simulation parameters
 % -------------------------------------------------------------------
 % Setting `study_dir` to `mfilename`, which is a reserved word, will
-%   automatically run the simulation and deposit its data and metadata into a
-%   new folder in the current directory that has the SAME NAME as this file:
+% automatically run the simulation and deposit its data and metadata into a
+% new folder in the current directory that has the SAME NAME as this file:
 study_dir = mfilename;
 % % If you're on a cluster and instead want to save the simulation results to a
-% %   folder in a different location, use the commented-out line below instead:
+% % folder in a different location, use the commented-out line below instead:
 % study_dir = strcat('/projectnb/crc-nak/asoplata/p25-anesthesia-grant-sim-data/', mfilename);
 
 % This is where you set the length of your simulation, in ms
 time_end = 1000; % in milliseconds
 
 % While DynaSim uses a default `dt` of 0.01 ms, we must specify ours explicitly
-%   since `dt` is actually used to construct our model directly.
+% since `dt` is actually used to construct our model directly.
 dt = 0.01; % in milliseconds
 
-% For the full size model (500 PYso's and PYdr's, 100 INso's and INdr's, 100
-%   TC's, and 100 TRN's), use a `numCellsScaledownFactor` of 1. To lower the
-%   number of cells simulated, but keep the same proportions, decrease this
-%   number to something > 0. As an example, using a 
-%   numCellsScaledownFactor of 0.1 (aka using a size of 10%) would 
-%   decrease the population sizes to 50 PYso's and PYdr's, 10 INso's and 
-%   INdr's, 10 TC's, and 10 TRN's.
-numCellsScaledownFactor = 1;
+% For the full size model (1024 PYso's and PYdr's, 256 IN), use a
+% `numCellsScaledownFactor` of 1. To lower the number of cells simulated, but
+% keep the same proportions, decrease this number to something > 0. As an
+% example, using a numCellsScaledownFactor of 0.1 (aka using a size of 10%)
+% would decrease the population sizes to 102 PYso's and PYdr's, and 26 INs.
+% numCellsScaledownFactor = 1;
+numCellsScaledownFactor = 0.1;
 
 % "Vary" parameters, aka parameters to be varied -- this tells DynaSim to run a
-%   simulation for all combinations of values. For a tutorial on how to use
-%   this, see
-%   https://github.com/DynaSim/DynaSim/wiki/DynaSim-Getting-Started-Tutorial#running-sets-of-simulations-by-varying-model-parameters
+% simulation for all combinations of values. For a tutorial on how to use
+% this, see
+% https://github.com/DynaSim/DynaSim/wiki/DynaSim-Getting-Started-Tutorial#running-sets-of-simulations-by-varying-model-parameters
 vary={
-'PYdr', 'appliedStim', 0;
-% 'PYdr', 'appliedStim', [0,1,2];
+'PYso', 'appliedStim', 0.1;
+'PYdr', 'appliedStim', 0.1;
+'IN',   'appliedStim', 0.1;
 };
 
 % Here is where we set simulator options specific to `dsSimulate`, which are
 %   explained in the DynaSim code file `dsSimulate.m`.
-% AES save_data_flag = 1;
 save_data_flag = 0;
+save_results_flag = 1;
 verbose_flag =   1;
 overwrite_flag = 1;
 parfor_flag =    0;
 % If you want to run a simulation using the batch system of your cluster, make
-%   sure to set the following options to something like this:
+% sure to set the following options to something like this:
 %    'cluster_flag', 1,...
 %    'memory_limit', '254G',...
 %    'num_cores', 16,...
@@ -128,13 +129,15 @@ spec = assembleSpecification(dt, numCellsScaledownFactor);
 [data] = dsSimulate(spec,...
     'save_data_flag',save_data_flag,'study_dir',study_dir,...
     'vary',vary,'cluster_flag',cluster_flag,...
+    'save_results_flag',save_results_flag,
     'verbose_flag',verbose_flag,'overwrite_flag',overwrite_flag,...
     'tspan',[0 time_end],'solver','euler','dt',dt,...
     'parfor_flag',parfor_flag,'random_seed','shuffle',...
     'memory_limit',memory_limit,'num_cores',num_cores,...
-    'plot_functions',{@dsPlot,@dsPlot,@dsPlot},...
-    'plot_options',{{'plot_type','waveform_averaged','format','png'},...
+    'plot_functions',{@dsPlot,@dsPlot},...
+    'plot_options',{{'plot_type','waveform','format','png'},...
                     {'plot_type','rastergram','format','png'}});%,...
+
 %                     {'plot_type','power','format','png','xlim',[0 40],'MUA_only_flag',1}});
 
 % -------------------------------------------------------------------

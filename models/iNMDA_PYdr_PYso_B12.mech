@@ -37,11 +37,11 @@ deprFactor = 0.9
 tauRes = 400 % ms
 
 resIC = 1
-resNoiseIC = 0
-sNMDAIC = 0.0
-sNMDANoiseIC = 0
-xNMDAIC = 0.0
-xNMDANoiseIC = 0
+resNoiseIC = 0.1
+sNMDAIC = 0.1
+sNMDANoiseIC = 0.1
+xNMDAIC = 0.1
+xNMDANoiseIC = 0.1
 
 % Connectivity
 % Connective radius, aka how many target cells each source cell connects
@@ -56,20 +56,16 @@ removeRecurrentBool = 1
 % above.
 normalizingFactor = min(((2*radius + (1-removeRecurrentBool)) / (N_post/N_pre)), N_pre)
 
-
 % Note that what is passed is 2x the radius
 netcon = netconNearestNeighbors(2*radius, N_pre, N_post, removeRecurrentBool)
 
 
 % Functions
-% AES
 INMDA_PYdr_PYso_B12(X,sNMDA,rec) = -gNMDA/normalizingFactor.*((res.*sNMDA)*netcon).*(X-ENMDA)
-% INMDA_PYdr_PYso_B12(X,sNMDA,rec) = -gNMDA/normalizingFactor.*(sNMDA*netcon).*(X-ENMDA)
 
 monitor INMDA_PYdr_PYso_B12
 
 % This is the synaptic activity state variable
-
 sNMDA' = alphaS.*xNMDA.*(1-sNMDA) - sNMDA./tauS
 sNMDA(0) = sNMDAIC+sNMDANoiseIC.*rand(1,N_pre)
 xNMDA' = alphaX./(1 + exp(-(X_pre-20)./2)) - xNMDA./tauX
@@ -78,7 +74,6 @@ xNMDA(0) = xNMDAIC+xNMDANoiseIC.*rand(1,N_pre)
 % This is the resources state variable
 res' = (1 - res)./tauRes + ((t-tspike_pre)<=dt).*(-(1 - res)./tauRes + (deprFactor.*res - res)./dt)
 res(0) = resIC-resNoiseIC.*rand(1,N_pre)
-% TODO add poisson
 
 % Linker
 @current += INMDA_PYdr_PYso_B12(X_post,sNMDA,res)
