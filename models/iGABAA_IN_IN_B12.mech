@@ -34,10 +34,15 @@ tauS = 10 % ms
 deprFactor = 0.9
 tauRes = 400 % ms
 
+% Initial conditions
 sGABAAIC = 0.0
 sGABAANoiseIC = 0.1
 resIC = 1
 resNoiseIC = 0.1
+
+% Propofol-modifying parameters
+propoCondMult = 1
+propoTauMult = 1
 
 % Connectivity
 % Connective radius, aka how many target cells each source cell connects
@@ -57,12 +62,12 @@ netcon = netconNearestNeighbors(2*radius, N_pre, N_post, removeRecurrentBool)
 
 
 % Functions
-IGABAA_IN_IN_B12(X,sGABAA,rec) = -gGABAA/normalizingFactor.*((res.*sGABAA)*netcon).*(X-EGABAA)
+IGABAA_IN_IN_B12(X,sGABAA,rec) = -propoCondMult.*gGABAA/normalizingFactor.*((res.*sGABAA)*netcon).*(X-EGABAA)
 
 monitor IGABAA_IN_IN_B12
 
 % This is the synaptic activity state variable
-sGABAA' = alpha./(1 + exp(-(X_pre-20)./2)) - sGABAA./tauS
+sGABAA' = alpha./(1 + exp(-(X_pre-20)./2)) - sGABAA./(tauS*propoTauMult)
 sGABAA(0) = sGABAAIC+sGABAANoiseIC.*rand(1,N_pre)
 
 % This is the resources state variable
