@@ -1,6 +1,7 @@
 # DynaSim mechanism files for simulating (Benita et al., 2012)
-  DynaSim-compatible mechanism files for simulation of the cortex of (Benita et
-  al., 2012).
+
+DynaSim-compatible mechanism files for simulation of the cortex of (Benita et
+al., 2012).
 
 Adding these mechanism files and associated functions into where you keep your
 mechanism files for [DynaSim](https://github.com/DynaSim/DynaSim), e.g.
