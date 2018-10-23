@@ -26,15 +26,16 @@ betaM(X) =  20.*exp(-(X+60)./18)
 alphaH(X) = 0.35.*exp(-(X+58)./20)
 betaH(X) =  5./(1+exp(-(X+28)./10))
 
-INa_IN_B12(X,mNa,hNa) = -gNa.*mNa.^3.*hNa.*(X-ENa)
+Minf(X) = alphaM(X)./(alphaM(X) + betaM(X))
+
+INa_IN_B12(X,hNa) = -gNa.*Minf(X).^3.*hNa.*(X-ENa)
 
 monitor INa_IN_B12
+monitor Minf
 
 % ODEs and ICs
-mNa' = (alphaM(X).*(1-mNa)) - (betaM(X).*mNa)
-mNa(0)=mNaIC+mNaNoiseIC.*rand(1, Npop)
 hNa' = (alphaH(X).*(1-hNa)) - (betaH(X).*hNa)
 hNa(0)=hNaIC+hNaNoiseIC.*rand(1, Npop)
 
 % Interface
-@current += INa_IN_B12(X,mNa,hNa)
+@current += INa_IN_B12(X,hNa)

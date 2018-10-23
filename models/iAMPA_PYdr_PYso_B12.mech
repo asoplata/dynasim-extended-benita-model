@@ -25,7 +25,8 @@
 % 1 mS / 1000000 nS * 100 mm^2 / 1 cm^2 = ...
 % 0.0154 mS/cm^2
 %
-gAMPA = 0.0154 % mS/cm^2
+gAMPAMult = 1 % for experimenting with gAMPA
+gAMPA = gAMPAMult * 0.0154 % mS/cm^2
 EAMPA = 0 % mV
 
 alpha = 3.48

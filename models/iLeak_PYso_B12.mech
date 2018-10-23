@@ -13,7 +13,8 @@
 % - Tags: potassium, leak, current, intrinsic, pyramidal, soma
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters
-gLeak = 0.0667 % mS/cm^2, +- 0.0067
+gLeakMult = 1 % for experiments
+gLeak = gLeakMult * 0.0667 % mS/cm^2, +- 0.0067
 ELeak = -60.95 % mV
 
 % Functions
