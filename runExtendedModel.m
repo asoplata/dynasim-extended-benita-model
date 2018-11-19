@@ -1,4 +1,4 @@
-%RUNBENITAMODEL - Run the DynaSim implementation of the (Benita et al., 2012) model!
+%RUNEXTENDEDMODEL - Run the DynaSim implementation of the (Benita et al., 2012) model extended with (Soplata et al., 2017) thalamus!
 %{
 This is a starter script to show both how to use the DynaSim mechanisms I've
 made for simulating the (Benita et al., 2012) model in Dynasim, available
@@ -77,24 +77,8 @@ vary={
 'IN',   'appliedStim', 0.1;
 };
 
-% Here is where we set simulator options specific to `dsSimulate`, which are
-%   explained in the DynaSim code file `dsSimulate.m`.
-save_data_flag = 0;
-save_results_flag = 1;
-verbose_flag =   1;
-overwrite_flag = 1;
-parfor_flag =    0;
-% If you want to run a simulation using the batch system of your cluster, make
-% sure to set the following options to something like this:
-%    'cluster_flag', 1,...
-%    'memory_limit', '254G',...
-%    'num_cores', 16,...
-cluster_flag =   0;
-memory_limit =   '8G';
-num_cores =      1;
-
 simulator_options={
-    'cluster_flag', 1,...       % Whether to submit simulation jobs to a cluster, 0 or 1
+    'cluster_flag', 0,...       % Whether to submit simulation jobs to a cluster, 0 or 1
     'cluster_matlab_version','2017b',...% TODO
     'compile_flag', 0,...       % Whether to compile simulation using MEX, 0 or 1
     'disk_flag', 0,...% TODO
@@ -119,7 +103,6 @@ simulator_options={
     'tspan', [0 time_end],...   % Time vector of simulation, [beg end], in milliseconds
     'verbose_flag', 1,...       % Whether to display process info, 0 or 1
 };
-
 
 % Debug: If you want to completely clean the environment and remove all data,
 %   set `debug` to 1:
