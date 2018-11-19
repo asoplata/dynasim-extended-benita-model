@@ -93,6 +93,34 @@ cluster_flag =   0;
 memory_limit =   '8G';
 num_cores =      1;
 
+simulator_options={
+    'cluster_flag', 1,...       % Whether to submit simulation jobs to a cluster, 0 or 1
+    'cluster_matlab_version','2017b',...% TODO
+    'compile_flag', 0,...       % Whether to compile simulation using MEX, 0 or 1
+    'disk_flag', 0,...% TODO
+    'downsample_factor', 10,... % How much to downsample data, proportionally {integer}
+    'dsPlot2_no_spikes', 1,...% TODO
+    'dt', 0.01,...              % Fixed time step, in milliseconds
+    'memory_limit', '8G',...    % Memory limit for use on cluster
+    'mex_flag', 0,...% TODO
+    'num_cores', 1,...          % Number of CPU cores to use, including on cluster
+    'overwrite_flag', 1,...     % Whether to overwrite simulation raw data, 0 or 1
+    'parfor_flag', 0,...        % Whether to use parfor if running multiple local sims, 0 or 1
+    'plot_functions', {@dsPlot, @dsPlot, @dsPlot},...% Which plot functions to call
+    'plot_options', {{'plot_type', 'waveform'},...   % Arguments to pass to each plot function
+                     {'plot_type', 'rastergram'},...
+                     {'plot_type', 'power'},...
+                    },...
+    'random_seed', 'shuffle',...% What seed to use, or to randomize
+    'save_data_flag', 0,...     % Whether to save raw output data, 0 or 1
+    'save_results_flag', 1,...  % Whether to save output plots and analyses, 0 or 1
+    'solver', 'euler',...         % Numerical integration method {'euler','rk1','rk2','rk4'}
+    'study_dir', study_dir,...  % Where to save simulation results and code
+    'tspan', [0 time_end],...   % Time vector of simulation, [beg end], in milliseconds
+    'verbose_flag', 1,...       % Whether to display process info, 0 or 1
+};
+
+
 % Debug: If you want to completely clean the environment and remove all data,
 %   set `debug` to 1:
 debug = 0;
@@ -109,13 +137,7 @@ end
 %% 2. Assemble and customize the model
 % -------------------------------------------------------------------
 % This builds the complete model, including all populations and connections.
-spec = assembleB12Spec(dt, numCellsScaledownFactor);
-
-% do NOT use fac values
-% % This changes the behavioral state for the model between the four stages
-% %   discussed in the paper: 'Awake', 'N2' (for NREM2), 'N3' (for NREM3)', and
-% %   'REM'. By default, the model is set to 'Awake' conditions.
-% spec = applyExperimentFactors(spec, 'N3');
+spec = assembleExtSpec(dt, numCellsScaledownFactor);
 
 % % Only run this if you do NOT want any noise/randomness in your initial
 % %   conditions, which can be useful for reproducibility or debugging.
@@ -126,18 +148,7 @@ spec = assembleB12Spec(dt, numCellsScaledownFactor);
 % -------------------------------------------------------------------
 % For an explanation of the arguments to `dsSimulate`, see the DynaSim code
 %   file `dsSimulate.m`.
-[data] = dsSimulate(spec,...
-    'save_data_flag',save_data_flag,'study_dir',study_dir,...
-    'vary',vary,'cluster_flag',cluster_flag,...
-    'save_results_flag',save_results_flag,...
-    'verbose_flag',verbose_flag,'overwrite_flag',overwrite_flag,...
-    'tspan',[0 time_end],'solver','euler','dt',dt,...
-    'parfor_flag',parfor_flag,'random_seed','shuffle',...
-    'memory_limit',memory_limit,'num_cores',num_cores,...
-    'plot_functions',{@dsPlot,@dsPlot,@dsPlot},...
-    'plot_options',{{'plot_type','waveform','format','png'},...
-                    {'plot_type','rastergram','format','png'},...
-                    {'plot_type','power','xlim',[0 80]}});
+data=dsSimulate(spec,'vary',vary,simulator_options{:});
 
 % -------------------------------------------------------------------
 %% 4. (Optional) Plot the results of the simulation post hoc
