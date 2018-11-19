@@ -1,5 +1,5 @@
-function specification = assembleSpecification(dt, numCellsScaledown)
-%ASSEMBLESPECIFICATION - Construct and connect the cortex of the (Benita et al., 2012) model
+function specification = assembleB12Spec(dt, numCellsScaledown)
+%ASSEMBLEB12SPEC - Construct and connect the cortex of the (Benita et al., 2012) model
 %
 % assembleSpecification builds a (Benita et al., 2012)-type DynaSim
 % specification, including both its populations and connections from the many

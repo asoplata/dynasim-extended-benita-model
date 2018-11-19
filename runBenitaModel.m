@@ -109,7 +109,7 @@ end
 %% 2. Assemble and customize the model
 % -------------------------------------------------------------------
 % This builds the complete model, including all populations and connections.
-spec = assembleSpecification(dt, numCellsScaledownFactor);
+spec = assembleB12Spec(dt, numCellsScaledownFactor);
 
 % do NOT use fac values
 % % This changes the behavioral state for the model between the four stages
