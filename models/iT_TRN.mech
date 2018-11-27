@@ -39,7 +39,7 @@ hTIC = 0.35
 hTNoiseIC = 0.1
 
 % Functions
-ET(CaBuffer_TRN) = 1000.*8.31441.*(273.15+36)./(2.*96846).*log(2./CaBuffer_TRN) % mV
+ET(CaBuffer_TRN) = 1000.*8.31441.*(273.15+36)./(2.*96846).*log(2./@CaBuffer_TRN) % mV
 
 Minf(X) = 1./(1+exp(-(X+vShift+50)./7.4))
 tauM(X) = (3.  + 1.0./(exp((X+vShift+25)./10) + exp(-(X+vShift+100)./15)))./phiM

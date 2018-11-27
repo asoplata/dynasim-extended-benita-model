@@ -1,7 +1,7 @@
-% # CaBuffer_TC: Calcium buffer concentration dynamics, for generic
-%     thalamocortical relay cells used in the DynaSim implementation of
-%     (Krishnan et al., 2016). Note that in the original code, this is
-%     identified as ICa, even though it is not a current.
+% # CaBuffer_TC:
+%
+% Calcium buffer concentration dynamics, for generic thalamocortical relay
+% cells used in (Soplata et al., 2017).
 %
 % - Source: This was built from the original paper's code, using "currents.h"
 %     lines 339-340, 1156, "currents.cpp" lines 133-139, 1047, and "CellSyn.h"
@@ -11,6 +11,9 @@
 %     - Krishnan GP, Chauvette S, Shamie I, Soltani S, Timofeev I, Cash SS, et
 %         al. Cellular and neurochemical basis of sleep stages in the
 %         thalamocortical network. eLife. 2016;5: e18607
+%     - Soplata AE, McCarthy MM, Sherfey J, Lee S, Purdon PL, Brown EN, et al.
+%     Thalamocortical control of propofol phase-amplitude coupling. PLoS Comput
+%     Biol. 2017;13: e1005879. doi:10.1371/journal.pcbi.1005879
 %
 % - Requires: "@IT_TC" exposed by "iT_TC" mechanism (which is,
 %     confusingly, called "IT_TC", NOT ICa, in the original code).

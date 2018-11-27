@@ -52,8 +52,20 @@ study_dir = mfilename;
 % % folder in a different location, use the commented-out line below instead:
 % study_dir = strcat('/projectnb/crc-nak/asoplata/p25-anesthesia-grant-sim-data/', mfilename);
 
+% Debug: If you want to completely clean the environment and remove all data,
+%   set `debug` to 1:
+debug = 1;
+if debug == 1
+    clf
+    close all
+    % Note: the below may be dangerous!
+    if 7==exist(study_dir, 'dir')
+        rmdir(study_dir, 's')
+    end
+end
+
 % This is where you set the length of your simulation, in ms
-time_end = 1000; % in milliseconds
+time_end = 3000; % in milliseconds
 
 % While DynaSim uses a default `dt` of 0.01 ms, we must specify ours explicitly
 % since `dt` is actually used to construct our model directly.
@@ -74,7 +86,7 @@ numCellsScaledownFactor = 0.1;
 vary={
 'PYso', 'appliedStim', 0.1;
 'PYdr', 'appliedStim', 0.1;
-'IN',   'appliedStim', 0.1;
+'TC',   'appliedStim', 0.1;
 };
 
 simulator_options={
@@ -90,8 +102,8 @@ simulator_options={
     'num_cores', 1,...          % Number of CPU cores to use, including on cluster
     'overwrite_flag', 1,...     % Whether to overwrite simulation raw data, 0 or 1
     'parfor_flag', 0,...        % Whether to use parfor if running multiple local sims, 0 or 1
-    'plot_functions', {@dsPlot, @dsPlot, @dsPlot},...% Which plot functions to call
-    'plot_options', {{'plot_type', 'waveform'},...   % Arguments to pass to each plot function
+    'plot_functions', {@dsPlot, @dsPlot, @dsPlot},...% Which plot functions to call automatically
+    'plot_options', {{'plot_type', 'waveform'},...   % Arguments to pass to each of those plot functions
                      {'plot_type', 'rastergram'},...
                      {'plot_type', 'power'},...
                     },...
@@ -103,18 +115,6 @@ simulator_options={
     'tspan', [0 time_end],...   % Time vector of simulation, [beg end], in milliseconds
     'verbose_flag', 1,...       % Whether to display process info, 0 or 1
 };
-
-% Debug: If you want to completely clean the environment and remove all data,
-%   set `debug` to 1:
-debug = 0;
-if debug == 1
-    clf
-    close all
-    % Note: the below may be dangerous!
-    if 7==exist(study_dir, 'dir')
-        rmdir(study_dir, 's')
-    end
-end
 
 % -------------------------------------------------------------------
 %% 2. Assemble and customize the model
@@ -139,4 +139,4 @@ data=dsSimulate(spec,'vary',vary,simulator_options{:});
 % For an explanation of the arguments to `dsSimulate`, see the DynaSim code
 % If you want to run your own plotting interactively, load the data using:
 
-% dsPlot(data);
+dsPlot(data);

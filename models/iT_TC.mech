@@ -44,7 +44,7 @@ hTIC = 0.35
 hTNoiseIC = 0.1
 
 % Functions
-ET(CaBuffer_TC) = 1000.*8.31441.*(273.15+36)./(2.*96846).*log(2./CaBuffer_TC) % mV
+ET(CaBuffer_TC) = 1000.*8.31441.*(273.15+36)./(2.*96846).*log(2./@CaBuffer_TC) % mV
 Minf(X)  = 1./(1+exp((-(X+vShift+57))./6.2))
 Hinf(X)  = 1./(1+exp((X+vShift+81)./4))
 tauM(X)  = (1./(exp(-(X+131.6)./16.7)+exp((X+16.8)./18.2)) + 0.612)./phiM
