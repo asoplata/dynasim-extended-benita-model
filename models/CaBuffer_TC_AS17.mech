@@ -25,7 +25,7 @@ CaBufferIC = 0.000001
 CaBufferNoiseIC = 0.0001
 
 % ODEs
-CaBuffer_TC_AS17' = max(-A.*@IT_TC_AS17, 0) + (Ca_inf - CaBuffer_TC_AS17)./tauR
+CaBuffer_TC_AS17' = max(-A.*@iT_TC_AS17, 0) + (Ca_inf - CaBuffer_TC_AS17)./tauR
 CaBuffer_TC_AS17(0) = CaBufferIC+CaBufferNoiseIC.*rand(1,Npop)
 
 % Interface

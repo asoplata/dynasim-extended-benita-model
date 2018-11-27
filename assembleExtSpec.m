@@ -52,7 +52,7 @@ specification=[];
 % -------------------------------------------------------------------
 % PY cells and intercompartmental PY connections:
 specification.populations(1).name='PYdr';
-specification.populations(1).size=round(numCellsScaledown*1024);
+specification.populations(1).size=round(numCellsScaledown*100);
 specification.populations(1).equations=eqns;
 specification.populations(1).mechanism_list={...
     'CaBuffer_PYdr_JB12',...
@@ -65,7 +65,7 @@ specification.populations(1).mechanism_list={...
 
 % Note that the soma mechanisms are somewhat sensitive to initial conditions
 specification.populations(2).name='PYso';
-specification.populations(2).size=round(numCellsScaledown*1024);
+specification.populations(2).size=round(numCellsScaledown*100);
 specification.populations(2).equations=eqns;
 specification.populations(2).mechanism_list={...
     'iAppliedCurrent',...
@@ -89,7 +89,7 @@ specification.connections(2).mechanism_list={...
 
 % IN cells and intercompartmental IN connections:
 specification.populations(3).name='IN';
-specification.populations(3).size=round(numCellsScaledown*256);
+specification.populations(3).size=round(numCellsScaledown*20);
 specification.populations(3).equations=eqns;
 specification.populations(3).mechanism_list={...
     'iAppliedCurrent',...
@@ -117,47 +117,47 @@ specification.connections(5).mechanism_list={...
 % -------------------------------------------------------------------
 
 specification.populations(4).name='TC';
-specification.populations(4).size=round(numCellsScaledown*100);
+specification.populations(4).size=round(numCellsScaledown*20);
 specification.populations(4).equations=eqns;
 specification.populations(4).mechanism_list={...
     'iAppliedCurrent',...
-    'iNa_TC',...
-    'iK_TC',...
-    'iLeak_TC',...
-    'iKLeak_TC',...
-    'CaBuffer_TC','iT_TC','iH_TC'};
+    'iNa_TC_AS17',...
+    'iK_TC_AS17',...
+    'iLeak_TC_AS17',...
+    'iKLeak_TC_AS17',...
+    'CaBuffer_TC_AS17','iT_TC_AS17','iH_TC_AS17'};
 
 specification.populations(5).name='TRN';
-specification.populations(5).size=round(numCellsScaledown*100);
+specification.populations(5).size=round(numCellsScaledown*20);
 specification.populations(5).equations=eqns;
 specification.populations(5).mechanism_list={...
     'iAppliedCurrent',...
-    'iNa_TRN',...
-    'iK_TRN',...
-    'iLeak_TRN',...
-    'iKLeak_TRN',...
-    'CaBuffer_TRN','iT_TRN'};
+    'iNa_TRN_AS17',...
+    'iK_TRN_AS17',...
+    'iLeak_TRN_AS17',...
+    'iKLeak_TRN_AS17',...
+    'iT_TRN_AS17'};
 
-specification.connections(6).direction='TC<-TRN';
-specification.connections(6).mechanism_list={...
-    'iGABAA_TC_TRN',...
-    'iGABAB_TC_TRN'};
-specification.connections(7).direction='TRN<-TRN';
-specification.connections(7).mechanism_list={'iGABAA_TRN_TRN'};
-specification.connections(8).direction='TRN<-TC';
-specification.connections(8).mechanism_list={'iAMPA_TRN_TC'};
-
-% -------------------------------------------------------------------
-%% 4. Thalamo-cortical Connections
-% -------------------------------------------------------------------
-specification.connections(9).direction='PYdr<-TC';
-specification.connections(9).mechanism_list={'iAMPAdepr_PYdr_TC'};
-
-specification.connections(10).direction='IN<-TC';
-specification.connections(10).mechanism_list={'iAMPAdepr_IN_TC'};
-
-specification.connections(11).direction='TC<-PYso';
-specification.connections(11).mechanism_list={'iAMPA_TC_PYso'};
-
-specification.connections(12).direction='TRN<-PYso';
-specification.connections(12).mechanism_list={'iAMPA_TRN_PYso'};
+% specification.connections(6).direction='TC<-TRN';
+% specification.connections(6).mechanism_list={...
+%     'iGABAA_TC_TRN_AS17',...
+%     'iGABAB_TC_TRN_AS17'};
+% specification.connections(7).direction='TRN<-TRN';
+% specification.connections(7).mechanism_list={'iGABAA_TRN_TRN_AS17'};
+% specification.connections(8).direction='TRN<-TC';
+% specification.connections(8).mechanism_list={'iAMPA_TRN_TC_AS17'};
+% 
+% % -------------------------------------------------------------------
+% %% 4. Thalamo-cortical Connections
+% % -------------------------------------------------------------------
+% specification.connections(9).direction='PYdr<-TC';
+% specification.connections(9).mechanism_list={'iAMPAdepr_PYdr_TC_AS17'};
+% 
+% specification.connections(10).direction='IN<-TC';
+% specification.connections(10).mechanism_list={'iAMPAdepr_IN_TC_AS17'};
+% 
+% specification.connections(11).direction='TC<-PYso';
+% specification.connections(11).mechanism_list={'iAMPA_TC_PYso'};
+% 
+% specification.connections(12).direction='TRN<-PYso';
+% specification.connections(12).mechanism_list={'iAMPA_TRN_PYso'};

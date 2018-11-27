@@ -71,13 +71,10 @@ time_end = 2000; % in milliseconds
 % since `dt` is actually used to construct our model directly.
 dt = 0.01; % in milliseconds
 
-% For the full size model (1024 PYso's and PYdr's, 256 IN), use a
+% For the full size model (100 PYso's and PYdr's, 20 IN's, 20 TC's, and 20 TRN's), use a
 % `numCellsScaledownFactor` of 1. To lower the number of cells simulated, but
-% keep the same proportions, decrease this number to something > 0. As an
-% example, using a numCellsScaledownFactor of 0.1 (aka using a size of 10%)
-% would decrease the population sizes to 102 PYso's and PYdr's, and 26 INs.
-% numCellsScaledownFactor = 1;
-numCellsScaledownFactor = 0.1;
+% keep the same proportions, decrease this number to something > 0.
+numCellsScaledownFactor = 1;
 
 % "Vary" parameters, aka parameters to be varied -- this tells DynaSim to run a
 % simulation for all combinations of values. For a tutorial on how to use
@@ -121,13 +118,6 @@ simulator_options={
 % -------------------------------------------------------------------
 % This builds the complete model, including all populations and connections.
 spec = assembleExtSpec(dt, numCellsScaledownFactor);
-
-% do NOT use fac values
-% % This changes the behavioral state for the model between the four stages
-% %   discussed in the paper: 'Awake', 'N2' (for NREM2), 'N3' (for NREM3)', and
-% %   'REM'. By default, the model is set to 'Awake' conditions.
-% spec = applyExperimentFactors(spec, 'N3');
->>>>>>> upstream/master:runBenitaModel.m
 
 % % Only run this if you do NOT want any noise/randomness in your initial
 % %   conditions, which can be useful for reproducibility or debugging.

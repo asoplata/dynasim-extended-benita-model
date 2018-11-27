@@ -1,56 +1,37 @@
-% # iT_TRN: T-type Low-threshold Calcium current for generic thalamic
-%     reticular cells used in the DynaSim implementation of (Krishnan et al.,
-%     2016). Note that in the original code, this celltype is called RE and
-%     this current is called IT_RE. In the original paper this mechanism is
-%     called both I_Ca and I_T. Additionally, the ICa identifier in the
-%     original code refers to the calcium buffer concentration dynamics, NOT
-%     the calcium current.
+% # iT_TRN_AS17:
 %
-% - Source: This was built from the original paper's code, using "currents.h"
-%     lines 281-299, "currents.cpp" lines 86-100, and "CellSyn.h" line 15.
+% T-type Low-threshold Calcium current for generic thalamic reticular cells
+% used in (Soplata et al., 2017).
 %
 % - References:
-%     - Krishnan GP, Chauvette S, Shamie I, Soltani S, Timofeev I, Cash SS, et
-%         al. Cellular and neurochemical basis of sleep stages in the
-%         thalamocortical network. eLife. 2016;5: e18607
-%     - Destexhe A, Bal T, McCormick DA, Sejnowski TJ. Ionic mechanisms
-%         underlying synchronized oscillations and propagating waves in a model
-%         of ferret thalamic slices. Journal of Neurophysiology. 1996;76:
-%         2049–2070.
-%
-% - Requires: @CaBuffer_TRN calcium concentration exposed by
-%     "CaBuffer_TRN" mechanism
-%
-% - Exposes: @IT_TRN calcium current as required by "CaBuffer_TRN"
+%     - Soplata AE, McCarthy MM, Sherfey J, Lee S, Purdon PL, Brown EN, et al.
+%     Thalamocortical control of propofol phase-amplitude coupling. PLoS Comput
+%     Biol. 2017;13: e1005879. doi:10.1371/journal.pcbi.1005879
 %
 % - Tags: calcium, current, intrinsic, thalamic, reticular
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters
-gT = 2.2    % mS/cm^2
-vShift = 2  % mV
-% The Q10 temperature adjustment values never change over the course of the
-%     simulations, so we are setting them to be constant.
-phiM = 5.0^((36-24)/10)    % unitless Q10 value of temperature adjustment
-phiH = 3.0^((36-24)/10)    % unitless Q10 value of temperature adjustment
+gT = 3      % mS/cm^2
+ET = 120    % mV
+vShift = 4  % mV
+phiM = 6.81 % unitless Q10 value of temperature adjustment
+phiH = 3.73 % unitless Q10 value of temperature adjustment
 
-mTIC = 0.01
+mTIC = 0.04
 mTNoiseIC = 0.1
 hTIC = 0.35
 hTNoiseIC = 0.1
 
 % Functions
-ET(CaBuffer_TRN) = 1000.*8.31441.*(273.15+36)./(2.*96846).*log(2./@CaBuffer_TRN) % mV
-
 Minf(X) = 1./(1+exp(-(X+vShift+50)./7.4))
-tauM(X) = (3.  + 1.0./(exp((X+vShift+25)./10) + exp(-(X+vShift+100)./15)))./phiM
+tauM(X) = ( 3.0 + 1.0./(exp((X+vShift+25)./10) + exp(-(X+vShift+100)./15)))./phiM
 
 Hinf(X) = 1./(1+exp((X+vShift+78)./5))
-tauH(X) = (85. + 1.0./(exp((X+vShift+46)./4)  + exp(-(X+vShift+405)./50)))./phiH
+tauH(X) = (85.0 + 1.0./(exp((X+vShift+46)./4)  + exp(-(X+vShift+405)./50)))./phiH
 
-% Note: For why the current term was not made negative here, see below.
-IT_TRN(X,mT,hT,CaBuffer_TRN) = gT.*mT.^2.*hT.*(X-ET(@CaBuffer_TRN))
+iT_TRN_AS17(X,mT,hT,CaBuffer_TRN_AS17) = -gT.*mT.^2.*hT.*(X-ET)
 
-monitor IT_TRN
+monitor iT_TRN_AS17
 
 % ODEs and ICs
 mT' = (Minf(X)-mT)./tauM(X)
@@ -59,9 +40,5 @@ hT' = (Hinf(X)-hT)./tauH(X)
 hT(0)=hTIC+hTNoiseIC.*rand(1,Npop)
 
 % Interface
-% Note: Usually in DynaSim, the current is made negative before being assigned
-%     to a linker, but in this case, the below is less confusing since exposing
-%     IT_TRN for the CaBuffer_TRN mechanism requires a
-%     not-made-negative version of IT_TRN.
-@current += -IT_TRN(X,mT,hT,CaBuffer_TRN)
-@IT_TRN += IT_TRN(X,mT,hT,CaBuffer_TRN)
+@current += iT_TRN_AS17(X,mT,hT,CaBuffer_TRN_AS17)
+@iT_TRN_AS17 += -iT_TRN_AS17(X,mT,hT,CaBuffer_TRN_AS17)
