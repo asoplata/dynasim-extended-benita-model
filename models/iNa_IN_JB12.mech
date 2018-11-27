@@ -1,4 +1,4 @@
-% # iNa_IN_B12:
+% # iNa_IN_JB12:
 %
 % Fast sodium current for generic interneurons used in the
 % DynaSim implementation of (Benita et al., 2012).
@@ -28,9 +28,9 @@ betaH(X) =  5./(1+exp(-(X+28)./10))
 
 Minf(X) = alphaM(X)./(alphaM(X) + betaM(X))
 
-INa_IN_B12(X,hNa) = -gNa.*Minf(X).^3.*hNa.*(X-ENa)
+INa_IN_JB12(X,hNa) = -gNa.*Minf(X).^3.*hNa.*(X-ENa)
 
-monitor INa_IN_B12
+monitor INa_IN_JB12
 monitor Minf
 
 % ODEs and ICs
@@ -38,4 +38,4 @@ hNa' = (alphaH(X).*(1-hNa)) - (betaH(X).*hNa)
 hNa(0)=hNaIC+hNaNoiseIC.*rand(1, Npop)
 
 % Interface
-@current += INa_IN_B12(X,hNa)
+@current += INa_IN_JB12(X,hNa)

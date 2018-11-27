@@ -1,8 +1,9 @@
-% # iGABAA_PYso_IN_B12:
+% # iGABAA_IN_IN_JB12:
 %
-% Normalized synaptic GABA-Aergic inhibitory current, with synaptic depression
-% and minis, FROM the interneuron TO pyramidal SOMAs (not dendrites) PYso<-IN
-% connection used in the DynaSim implementation of (Benita et al., 2012).
+% Normalized synaptic GABA-Aergic inhibitory current, with synaptic
+% depression and minis, FROM the interneuron axo-soma TO pyramidal
+% dendrite PYdr<-IN connection used in the DynaSim
+% implementation of (Benita et al., 2012).
 %
 % - Dependencies:
 %     - netconNearestNeighbors.m
@@ -21,11 +22,11 @@
 % absolute to area-relative terms, while also converting the units to
 % mS/cm^2 to keep pace with the rest of the equations:
 %
-% 4.15 nS (gGABAA IE) / 0.015 mm^2 (soma area) * ...
+% 0.165 nS (gGABAA II) / 0.02 mm^2 (interneuron area) * ...
 % 1 mS / 1000000 nS * 100 mm^2 / 1 cm^2 = ...
-% 0.0277 mS/cm^2
+% 0.000825 mS/cm^2
 %
-gGABAA = 0.0277 % mS/cm^2
+gGABAA = 0.000825 % mS/cm^2
 EGABAA = -70    % mV
 
 alpha = 1
@@ -33,7 +34,7 @@ tauS = 10 % ms
 deprFactor = 0.9
 tauRes = 400 % ms
 
-% Initial Conditions
+% Initial conditions
 sGABAAIC = 0.0
 sGABAANoiseIC = 0.1
 resIC = 1
@@ -61,9 +62,9 @@ netcon = netconNearestNeighbors(2*radius, N_pre, N_post, removeRecurrentBool)
 
 
 % Functions
-IGABAA_PYso_IN_B12(X,sGABAA,rec) = -propoCondMult.*gGABAA/normalizingFactor.*((res.*sGABAA)*netcon).*(X-EGABAA)
+IGABAA_IN_IN_JB12(X,sGABAA,rec) = -propoCondMult.*gGABAA/normalizingFactor.*((res.*sGABAA)*netcon).*(X-EGABAA)
 
-monitor IGABAA_PYso_IN_B12
+monitor IGABAA_IN_IN_JB12
 
 % This is the synaptic activity state variable
 sGABAA' = alpha./(1 + exp(-(X_pre-20)./2)) - sGABAA./(tauS*propoTauMult)
@@ -74,4 +75,4 @@ res' = (1 - res)./tauRes + ((t-tspike_pre)<=dt).*(-(1 - res)./tauRes + (deprFact
 res(0) = resIC-resNoiseIC.*rand(1,N_pre)
 
 % Linker
-@current += IGABAA_PYso_IN_B12(X_post,sGABAA,res)
+@current += IGABAA_IN_IN_JB12(X_post,sGABAA,res)

@@ -65,7 +65,7 @@ if debug == 1
 end
 
 % This is where you set the length of your simulation, in ms
-time_end = 3000; % in milliseconds
+time_end = 2000; % in milliseconds
 
 % While DynaSim uses a default `dt` of 0.01 ms, we must specify ours explicitly
 % since `dt` is actually used to construct our model directly.
@@ -121,6 +121,13 @@ simulator_options={
 % -------------------------------------------------------------------
 % This builds the complete model, including all populations and connections.
 spec = assembleExtSpec(dt, numCellsScaledownFactor);
+
+% do NOT use fac values
+% % This changes the behavioral state for the model between the four stages
+% %   discussed in the paper: 'Awake', 'N2' (for NREM2), 'N3' (for NREM3)', and
+% %   'REM'. By default, the model is set to 'Awake' conditions.
+% spec = applyExperimentFactors(spec, 'N3');
+>>>>>>> upstream/master:runBenitaModel.m
 
 % % Only run this if you do NOT want any noise/randomness in your initial
 % %   conditions, which can be useful for reproducibility or debugging.

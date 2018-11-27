@@ -1,4 +1,4 @@
-% # iK_PYso_B12:
+% # iK_PYso_JB12:
 %
 % Fast delayed rectifier potassium current, for generic pyramidal soma
 % compartments used in the DynaSim implementation of (Benita et al., 2012). The
@@ -28,13 +28,13 @@ nKNoiseIC = 0.2
 alphaN(X) = 0.01.*(X+34)./(1 - exp(-(X+34)./10))
 betaN(X) =  0.125.*exp(-(X+44)./25)
 
-IK_PYso_B12(X,nK) = -gK.*nK.^4.*(X-EK)
+IK_PYso_JB12(X,nK) = -gK.*nK.^4.*(X-EK)
 
-monitor IK_PYso_B12
+monitor IK_PYso_JB12
 
 % ODEs and ICs
 nK' = phi.*((alphaN(X).*(1-nK)) - (betaN(X).*nK))
 nK(0)=nKIC+nKNoiseIC.*rand(1,Npop)
 
 % Interface
-@current += IK_PYso_B12(X,nK)
+@current += IK_PYso_JB12(X,nK)
