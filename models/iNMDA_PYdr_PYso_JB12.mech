@@ -1,6 +1,6 @@
-% # iAMPA_PYdr_PYso_B12:
+% # iNMDA_PYdr_PYso_JB12:
 %
-% Normalized synaptic AMPAergic excitatory current, with synaptic
+% Normalized synaptic NMDAergic excitatory current, with synaptic
 % depression and minis, FROM the pyramidal axo-soma TO pyramidal dendrite
 % PYdr<-PYso connection used in the DynaSim implementation of (Benita et
 % al., 2012).
@@ -21,23 +21,27 @@
 % absolute to area-relative terms, while also converting the units to
 % mS/cm^2 to keep pace with the rest of the equations:
 %
-% 5.4 nS (gAMPA EE) / 0.035 mm^2 (dendrite area) * ...
+% 0.9 nS (gNMDA EE) / 0.035 mm^2 (dendrite area) * ...
 % 1 mS / 1000000 nS * 100 mm^2 / 1 cm^2 = ...
-% 0.0154 mS/cm^2
+% 0.00257 mS/cm^2
 %
-gAMPAMult = 1 % for experimenting with gAMPA
-gAMPA = gAMPAMult * 0.0154 % mS/cm^2
-EAMPA = 0 % mV
+gNMDA = 0.00257       % mS/cm^2
+ENMDA = 0 % mV
 
-alpha = 3.48
-tauS = 2 % ms
+alphaS = 0.5
+tauS = 100 % ms
+alphaX = 3.48
+tauX = 2 % ms
+
 deprFactor = 0.9
 tauRes = 400 % ms
 
-sAMPAIC = 0.0
-sAMPANoiseIC = 0.1
 resIC = 1
 resNoiseIC = 0.1
+sNMDAIC = 0.1
+sNMDANoiseIC = 0.1
+xNMDAIC = 0.1
+xNMDANoiseIC = 0.1
 
 % Connectivity
 % Connective radius, aka how many target cells each source cell connects
@@ -57,17 +61,19 @@ netcon = netconNearestNeighbors(2*radius, N_pre, N_post, removeRecurrentBool)
 
 
 % Functions
-IAMPA_PYdr_PYso_B12(X,sAMPA,rec) = -gAMPA/normalizingFactor.*((res.*sAMPA)*netcon).*(X-EAMPA)
+INMDA_PYdr_PYso_JB12(X,sNMDA,rec) = -gNMDA/normalizingFactor.*((res.*sNMDA)*netcon).*(X-ENMDA)
 
-monitor IAMPA_PYdr_PYso_B12
+monitor INMDA_PYdr_PYso_JB12
 
 % This is the synaptic activity state variable
-sAMPA' = alpha./(1 + exp(-(X_pre-20)./2)) - sAMPA./tauS
-sAMPA(0) = sAMPAIC+sAMPANoiseIC.*rand(1,N_pre)
+sNMDA' = alphaS.*xNMDA.*(1-sNMDA) - sNMDA./tauS
+sNMDA(0) = sNMDAIC+sNMDANoiseIC.*rand(1,N_pre)
+xNMDA' = alphaX./(1 + exp(-(X_pre-20)./2)) - xNMDA./tauX
+xNMDA(0) = xNMDAIC+xNMDANoiseIC.*rand(1,N_pre)
 
 % This is the resources state variable
 res' = (1 - res)./tauRes + ((t-tspike_pre)<=dt).*(-(1 - res)./tauRes + (deprFactor.*res - res)./dt)
 res(0) = resIC-resNoiseIC.*rand(1,N_pre)
 
 % Linker
-@current += IAMPA_PYdr_PYso_B12(X_post,sAMPA,res)
+@current += INMDA_PYdr_PYso_JB12(X_post,sNMDA,res)

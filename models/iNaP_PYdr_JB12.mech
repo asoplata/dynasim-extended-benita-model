@@ -1,4 +1,4 @@
-% # iNaP_PYdr_B12:
+% # iNaP_PYdr_JB12:
 %
 % Persistent sodium current, Hodgkin-Huxley-style, for generic pyramidal
 % dendrite compartments used in the DynaSim implementation of (Benita et al.,
@@ -19,15 +19,15 @@ ENaP = 55  % mV
 % Functions
 Minf(X) = 1./(1 + exp(-(X+55.7)./7.7))
 
-INaP_PYdr_B12(X) = gNaP.*Minf(X).^3.*(X-ENaP)
+INaP_PYdr_JB12(X) = gNaP.*Minf(X).^3.*(X-ENaP)
 
-monitor INaP_PYdr_B12
+monitor INaP_PYdr_JB12
 
 % Interface
 % Note: Usually in DynaSim, the current is made negative
 % before being assigned to a linker, but in this case, the
-% below is less confusing. Exposing INaP_PYdr_B12 for the
-% IKNa_PYso_PYdr_B12 mechanism requires a not-made-negative
-% version of INaP_PYdr_B12.
-@current += -INaP_PYdr_B12(X)
-@INaP_PYdr_B12 += INaP_PYdr_B12(X)
+% below is less confusing. Exposing INaP_PYdr_JB12 for the
+% IKNa_PYso_PYdr_JB12 mechanism requires a not-made-negative
+% version of INaP_PYdr_JB12.
+@current += -INaP_PYdr_JB12(X)
+@INaP_PYdr_JB12 += INaP_PYdr_JB12(X)

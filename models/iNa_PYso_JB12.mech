@@ -1,4 +1,4 @@
-% # iNa_PYso_B12:
+% # iNa_PYso_JB12:
 %
 % Fast sodium current for generic pyramidal soma compartments used in the
 % DynaSim implementation of (Benita et al., 2012). The paper claims this
@@ -31,9 +31,9 @@ Minf(X) = alphaM(X)./(alphaM(X) + betaM(X))
 alphaH(X) = 0.07.*exp(-(X+50)./10)
 betaH(X) =  1./(1+exp(-(X+20)./10))
 
-INa_PYso_B12(X,hNa) = gNa.*Minf(X).^3.*hNa.*(X-ENa)
+INa_PYso_JB12(X,hNa) = gNa.*Minf(X).^3.*hNa.*(X-ENa)
 
-monitor INa_PYso_B12
+monitor INa_PYso_JB12
 
 % ODEs and ICs
 hNa' = phi.*((alphaH(X).*(1-hNa)) - (betaH(X).*hNa))
@@ -42,8 +42,8 @@ hNa(0)=hNaIC+hNaNoiseIC.*rand(1, Npop)
 % Interface
 % Note: Usually in DynaSim, the current is made negative
 % before being assigned to a linker, but in this case, the
-% below is less confusing. Exposing INa_PYso_B12 for the
-% IKNa_PYso_PYdr_B12 mechanism requires a not-made-negative
-% version of INa_PYso_B12.
-@current += -INa_PYso_B12(X,hNa)
-@INa_PYso_B12 += INa_PYso_B12(X,hNa)
+% below is less confusing. Exposing INa_PYso_JB12 for the
+% IKNa_PYso_PYdr_JB12 mechanism requires a not-made-negative
+% version of INa_PYso_JB12.
+@current += -INa_PYso_JB12(X,hNa)
+@INa_PYso_JB12 += INa_PYso_JB12(X,hNa)

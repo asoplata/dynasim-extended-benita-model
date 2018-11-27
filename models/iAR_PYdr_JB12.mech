@@ -1,4 +1,4 @@
-% # iAR_PYdr_B12:
+% # iAR_PYdr_JB12:
 %
 % Inwardly rectifying potassium current, for generic pyramidal dendrite
 % compartments used in the DynaSim implementation of (Benita et al., 2012).
@@ -18,9 +18,9 @@ EAR = -100   % mV
 % Functions
 Hinf(X) = 1./(1 + exp((X+75)./4))
 
-IAR_PYdr_B12(X) = -gAR.*Hinf(X).*(X-EAR)
+IAR_PYdr_JB12(X) = -gAR.*Hinf(X).*(X-EAR)
 
-monitor IAR_PYdr_B12
+monitor IAR_PYdr_JB12
 
 % Interface
-@current += IAR_PYdr_B12(X)
+@current += IAR_PYdr_JB12(X)

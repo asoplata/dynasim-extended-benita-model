@@ -1,4 +1,4 @@
-% # iKS_PYso_B12:
+% # iKS_PYso_JB12:
 %
 % Non-inactivating potassium current, for generic pyramidal soma compartments
 % used in the DynaSim implementation of (Benita et al., 2012). The original
@@ -28,13 +28,13 @@ mKSNoiseIC = 0.2
 Minf(X) = 1./(1 + exp(-(X+34)./6.5))
 tauM(X) = 8./(exp(-(X+55)./30) + exp((X+55)./30))
 
-IKS_PYso_B12(X,mKS) = -gKS.*mKS.^3.*(X-EKS)
+IKS_PYso_JB12(X,mKS) = -gKS.*mKS.^3.*(X-EKS)
 
-monitor IKS_PYso_B12
+monitor IKS_PYso_JB12
 
 % ODEs and ICs
 mKS' = phi.*(Minf(X) - mKS)./tauM(X)
 mKS(0)=mKSIC+mKSNoiseIC.*rand(1, Npop)
 
 % Interface
-@current += IKS_PYso_B12(X,mKS)
+@current += IKS_PYso_JB12(X,mKS)

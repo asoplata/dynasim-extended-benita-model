@@ -53,7 +53,7 @@ study_dir = mfilename;
 % study_dir = strcat('/projectnb/crc-nak/asoplata/p25-anesthesia-grant-sim-data/', mfilename);
 
 % This is where you set the length of your simulation, in ms
-time_end = 1000; % in milliseconds
+time_end = 2000; % in milliseconds
 
 % While DynaSim uses a default `dt` of 0.01 ms, we must specify ours explicitly
 % since `dt` is actually used to construct our model directly.
@@ -109,7 +109,7 @@ end
 %% 2. Assemble and customize the model
 % -------------------------------------------------------------------
 % This builds the complete model, including all populations and connections.
-spec = assembleB12Spec(dt, numCellsScaledownFactor);
+spec = assembleJB12Spec(dt, numCellsScaledownFactor);
 
 % do NOT use fac values
 % % This changes the behavioral state for the model between the four stages

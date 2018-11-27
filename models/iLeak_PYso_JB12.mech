@@ -1,4 +1,4 @@
-% # iLeak_PYso_B12:
+% # iLeak_PYso_JB12:
 %
 % Chloride/general Leak current, Hodgkin-Huxley-style, for generic pyramidal
 % somatic compartments used in the DynaSim implementation of (Benita et al.,
@@ -18,9 +18,9 @@ gLeak = gLeakMult * 0.0667 % mS/cm^2, +- 0.0067
 ELeak = -60.95 % mV
 
 % Functions
-ILeak_PYso_B12(X) = -gLeak.*(X-ELeak)
+ILeak_PYso_JB12(X) = -gLeak.*(X-ELeak)
 
-monitor ILeak_PYso_B12
+monitor ILeak_PYso_JB12
 
 % Linker
-@current += ILeak_PYso_B12(X)
+@current += ILeak_PYso_JB12(X)

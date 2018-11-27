@@ -1,4 +1,4 @@
-% # iK_IN_B12:
+% # iK_IN_JB12:
 %
 % Fast delayed rectifier potassium current, for generic interneurons used in
 % the DynaSim implementation of (Benita et al., 2012).
@@ -22,12 +22,12 @@ nKNoiseIC = 0.2
 alphaN(X) = 0.05.*(X+34)./(1 - exp(-(X+34)./10))
 betaN(X) =  0.625.*exp(-(X+44)./80)
 
-IK_IN_B12(X,nK) = -gK.*nK.^4.*(X-EK)
-monitor IK_IN_B12
+IK_IN_JB12(X,nK) = -gK.*nK.^4.*(X-EK)
+monitor IK_IN_JB12
 
 % ODEs and ICs
 nK' = (alphaN(X).*(1-nK)) - (betaN(X).*nK)
 nK(0)=nKIC+nKNoiseIC.*rand(1,Npop)
 
 % Interface
-@current += IK_IN_B12(X,nK)
+@current += IK_IN_JB12(X,nK)

@@ -1,4 +1,4 @@
-% # CaBuffer_PYdr_B12:
+% # CaBuffer_PYdr_JB12:
 %
 % Calcium buffer concentration dynamics, for generic pyramidal dendrite
 % compartments used in the DynaSim implementation of (Benita et al., 2012).
@@ -6,10 +6,10 @@
 % - Note: This CaBuffer produces calcium in concentations of uM, not mM
 %
 % - Requires:
-%     - "@IHVA_PYdr_B12" exposed by "IHVA_PYdr_B12" mechanism
+%     - "@IHVA_PYdr_JB12" exposed by "IHVA_PYdr_JB12" mechanism
 %
 % - Exposes:
-%     - calcium concentration "@CaBuffer_PYdr_B12" required for "iKCa_PYdr_B12"
+%     - calcium concentration "@CaBuffer_PYdr_JB12" required for "iKCa_PYdr_JB12"
 %     mechanism
 %
 % - References:
@@ -32,8 +32,8 @@ CaBufferNoiseIC = 0.01
 
 % ODEs
 % CaBuffer requires input from IHVA, but CaBuffer is only used by IKCa
-CaBuffer_PYdr_B12' = max(-alphaCa.*areaDR.*@IHVA_PYdr_B12, 0) - CaBuffer_PYdr_B12./tauCa
-CaBuffer_PYdr_B12(0) = CaBufferIC+CaBufferNoiseIC.*rand(1,Npop)
+CaBuffer_PYdr_JB12' = max(-alphaCa.*areaDR.*@IHVA_PYdr_JB12, 0) - CaBuffer_PYdr_JB12./tauCa
+CaBuffer_PYdr_JB12(0) = CaBufferIC+CaBufferNoiseIC.*rand(1,Npop)
 
 % Interface
-@CaBuffer_PYdr_B12 += CaBuffer_PYdr_B12
+@CaBuffer_PYdr_JB12 += CaBuffer_PYdr_JB12

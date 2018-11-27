@@ -1,4 +1,4 @@
-% # iA_PYso_B12:
+% # iA_PYso_JB12:
 %
 % Fast A-type potassium current, for generic pyramidal soma compartments used
 % in the DynaSim implementation of (Benita et al., 2012). The original paper
@@ -29,13 +29,13 @@ hANoiseIC = 0.5
 Minf(X) = 1./(1 + exp(-(X+50)./20))
 Hinf(X) = 1./(1 + exp((X+80)./6))
 
-IA_PYso_B12(X,hA) = -gA.*Minf(X).^3.*hA.*(X-EA)
+IA_PYso_JB12(X,hA) = -gA.*Minf(X).^3.*hA.*(X-EA)
 
-monitor IA_PYso_B12
+monitor IA_PYso_JB12
 
 % ODEs and ICs
 hA' = phi.*(Hinf(X) - hA)./tauH
 hA(0)=hAIC+hANoiseIC.*rand(1, Npop)
 
 % Interface
-@current += IA_PYso_B12(X,hA)
+@current += IA_PYso_JB12(X,hA)
