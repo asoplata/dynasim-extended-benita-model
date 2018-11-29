@@ -138,15 +138,16 @@ specification.populations(5).mechanism_list={...
     'iKLeak_TRN_AS17',...
     'iT_TRN_AS17'};
 
-% specification.connections(6).direction='TC<-TRN';
-% specification.connections(6).mechanism_list={...
-%     'iGABAA_TC_TRN_AS17',...
-%     'iGABAB_TC_TRN_AS17'};
-% specification.connections(7).direction='TRN<-TRN';
-% specification.connections(7).mechanism_list={'iGABAA_TRN_TRN_AS17'};
-% specification.connections(8).direction='TRN<-TC';
-% specification.connections(8).mechanism_list={'iAMPA_TRN_TC_AS17'};
-% 
+specification.connections(6).direction='TC<-TRN';
+specification.connections(6).mechanism_list={...
+    'iGABAA_TC_TRN_AS17',...
+    'iGABAB_TC_TRN_AS17',...
+    };
+specification.connections(7).direction='TRN<-TRN';
+specification.connections(7).mechanism_list={'iGABAA_TRN_TRN_AS17'};
+specification.connections(8).direction='TRN<-TC';
+specification.connections(8).mechanism_list={'iAMPA_TRN_TC_AS17'};
+
 % % -------------------------------------------------------------------
 % %% 4. Thalamo-cortical Connections
 % % -------------------------------------------------------------------

@@ -83,8 +83,8 @@ numCellsScaledownFactor = 1;
 vary={
 'PYso', 'appliedStim', 0.1;
 'PYdr', 'appliedStim', 0.1;
-'TC',   'appliedStim', 0.1;
 };
+% 'TC',   'appliedStim', 0.2;
 
 simulator_options={
     'cluster_flag', 0,...       % Whether to submit simulation jobs to a cluster, 0 or 1
@@ -99,11 +99,6 @@ simulator_options={
     'num_cores', 1,...          % Number of CPU cores to use, including on cluster
     'overwrite_flag', 1,...     % Whether to overwrite simulation raw data, 0 or 1
     'parfor_flag', 0,...        % Whether to use parfor if running multiple local sims, 0 or 1
-    'plot_functions', {@dsPlot, @dsPlot, @dsPlot},...% Which plot functions to call automatically
-    'plot_options', {{'plot_type', 'waveform'},...   % Arguments to pass to each of those plot functions
-                     {'plot_type', 'rastergram'},...
-                     {'plot_type', 'power'},...
-                    },...
     'random_seed', 'shuffle',...% What seed to use, or to randomize
     'save_data_flag', 0,...     % Whether to save raw output data, 0 or 1
     'save_results_flag', 1,...  % Whether to save output plots and analyses, 0 or 1
@@ -112,6 +107,13 @@ simulator_options={
     'tspan', [0 time_end],...   % Time vector of simulation, [beg end], in milliseconds
     'verbose_flag', 1,...       % Whether to display process info, 0 or 1
 };
+
+
+%     'plot_functions', {@dsPlot, @dsPlot, @dsPlot},...% Which plot functions to call automatically
+%     'plot_options', {{'plot_type', 'waveform'},...   % Arguments to pass to each of those plot functions
+%                      {'plot_type', 'rastergram'},...
+%                      {'plot_type', 'power'},...
+%                     },...
 
 % -------------------------------------------------------------------
 %% 2. Assemble and customize the model

@@ -1,4 +1,6 @@
-%% iGABABChing2010: SCALED synaptic GABA-B-ergic inhibitory current
+% # iGABAB_TC_TRN_AS17:
+%
+% SCALED synaptic GABA-B-ergic inhibitory current
 % This is, very slightly, an original formulation of the GABA-B current.
 % The state variable [R] for GABAB is 'customized' here, in that, rather
 %     than the popular formulation of a 0.5 mM box 0.3 ms long for the
@@ -38,26 +40,27 @@
 % Parameters
 gGABAB = 0.001
 EGABAB = -95
-IC = 0.1
-IC_noise = 0
+
+rGABABIC = 0.1
+rGABABNoiseIC= 0.1
+sGABABIC = 0.1
+sGABABNoiseIC= 0.1
 
 % Connectivity
 % 'ones' so all-to-all connectivity
 netcon = ones(N_pre,N_post)
 
 % Functions
-% Note that because of `gGABAB/N_pre`, the total current to the target is scaled
-%   down by the number of source cells.
-IGABABChing2010(X,g) = gGABAB/N_pre.*((g.^4./(g.^4 + 100))*netcon).*(X-EGABAB)
+iGABAB_TC_TRN_AS17(X,sGABAB) = -gGABAB/N_pre.*((sGABAB.^4./(sGABAB.^4 + 100))*netcon).*(X-EGABAB)
 
 % This way we record the synaptic currents!
 monitor functions
 
 % ODEs and ICs
-r' = 0.5.*(2.*(1 + tanh(X_pre./4))).*(1-r) - 0.0012.*r;
-r(0) = IC+IC_noise.*rand(1,Npre);
-g' = 0.18.*r - 0.034.*g;
-g(0) = IC+IC_noise.*rand(1,Npre);
+rGABAB' = 0.5.*(2.*(1 + tanh(X_pre./4))).*(1-rGABAB) - 0.0012.*rGABAB
+rGABAB(0) = rGABABIC+rGABABNoiseIC.*rand(1,Npre)
+sGABAB' = 0.18.*rGABAB - 0.034.*sGABAB
+sGABAB(0) = sGABABIC+sGABABNoiseIC.*rand(1,Npre)
 
 % Linker
-@current += -IGABABChing2010(X_post,g)
+@current += iGABAB_TC_TRN_AS17(X_post,sGABAB)
