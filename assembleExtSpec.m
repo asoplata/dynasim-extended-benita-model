@@ -1,4 +1,4 @@
-function specification = assembleExtSpec(dt, numCellsScaledown)
+function specification = assembleExtSpec(numCellsScaledown)
 %ASSEMBLEEXTSPEC - Construct and connect the cortex of the (Benita et al., 2012) model
 %
 % assembleSpecification builds a (Benita et al., 2012)-type DynaSim
