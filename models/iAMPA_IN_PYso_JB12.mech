@@ -63,7 +63,7 @@ IAMPA_IN_PYso_JB12(X,sAMPA,rec) = -gAMPA/normalizingFactor.*((res.*sAMPA)*netcon
 monitor IAMPA_IN_PYso_JB12
 
 % This is the synaptic activity state variable
-sAMPA' = alpha./(1 + exp(-(X_pre-20)./2)) - sAMPA./tauS
+sAMPA' = alpha./(1 + exp(-(X_pre+20)./2)) - sAMPA./tauS
 sAMPA(0) = sAMPAIC+sAMPANoiseIC.*rand(1,N_pre)
 
 % This is the resources state variable
