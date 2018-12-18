@@ -1,4 +1,4 @@
-% # iAMPA_TC_PYso:
+% # iAMPA_TRN_PYso:
 %
 % Synaptic AMPAergic excitatory current used in (Soplata et al., 2017).
 %
@@ -12,7 +12,7 @@
 % Parameters
 % AES
 % Calibrated
-gAMPA = 0.4 % mS/cm^2
+gAMPA = 0.2 % mS/cm^2
 EAMPA = 1   % mV
 % EAMPA = 0   % mV
 tauAMPA = 2
@@ -37,7 +37,7 @@ normalizingFactor = min(((2*radius + (1-removeRecurrentBool)) / (N_post/N_pre)),
 netcon = netconNearestNeighbors(2*radius, N_pre, N_post, removeRecurrentBool)
 
 % Functions
-iAMPA_TC_PYso(X,sAMPA) = -gAMPA/normalizingFactor.*(sAMPA*netcon).*(X-EAMPA)
+iAMPA_TRN_PYso(X,sAMPA) = -gAMPA/normalizingFactor.*(sAMPA*netcon).*(X-EAMPA)
 
 monitor functions
 
@@ -46,4 +46,4 @@ sAMPA' = 5.*(1 + tanh(X_pre./4)).*(1-sAMPA) - sAMPA./tauAMPA;
 sAMPA(0) = sAMPAIC+sAMPANoiseIC.*rand(1,N_pre);
 
 % Linker
-@current += iAMPA_TC_PYso(X_post,sAMPA)
+@current += iAMPA_TRN_PYso(X_post,sAMPA)
