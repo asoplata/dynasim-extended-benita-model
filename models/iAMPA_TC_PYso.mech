@@ -10,8 +10,6 @@
 % Tags: synapse, connection, excitation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters
-% AES
-% Calibrated
 gAMPA = 0.4 % mS/cm^2
 EAMPA = 1   % mV
 % EAMPA = 0   % mV

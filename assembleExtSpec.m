@@ -22,7 +22,7 @@ function specification = assembleExtSpec(numCellsScaledown)
 %
 % References:
 %     - Benita, J. M., Guillamon, A., Deco, G., & Sanchez-Vives, M. V. (2012).
-%     Synaptic depression and slow oscillatory activity in a biophysical
+%     Synaptic ession and slow oscillatory activity in a biophysical
 %     network model of the cerebral cortex. Frontiers in Computational
 %     Neuroscience, 6. https://doi.org/10.3389/fncom.2012.00064
 %
@@ -125,7 +125,9 @@ specification.populations(4).mechanism_list={...
     'iK_TC_AS17',...
     'iLeak_TC_AS17',...
     'iKLeak_TC_AS17',...
-    'CaBuffer_TC_AS17','iT_TC_AS17','iH_TC_AS17'};
+    'CaBuffer_TC_AS17',...
+    'iT_TC_AS17',...
+    'iH_TC_AS17'};
 
 specification.populations(5).name='TRN';
 specification.populations(5).size=round(numCellsScaledown*20);
@@ -148,17 +150,17 @@ specification.connections(7).mechanism_list={'iGABAA_TRN_TRN_AS17'};
 specification.connections(8).direction='TRN<-TC';
 specification.connections(8).mechanism_list={'iAMPA_TRN_TC_AS17'};
 
-% % -------------------------------------------------------------------
-% %% 4. Thalamo-cortical Connections
-% % -------------------------------------------------------------------
-% specification.connections(9).direction='PYdr<-TC';
-% specification.connections(9).mechanism_list={'iAMPAdepr_PYdr_TC_AS17'};
-% 
-% specification.connections(10).direction='IN<-TC';
-% specification.connections(10).mechanism_list={'iAMPAdepr_IN_TC_AS17'};
-% 
-% specification.connections(11).direction='TC<-PYso';
-% specification.connections(11).mechanism_list={'iAMPA_TC_PYso'};
-% 
-% specification.connections(12).direction='TRN<-PYso';
-% specification.connections(12).mechanism_list={'iAMPA_TRN_PYso'};
+% -------------------------------------------------------------------
+%% 4. Thalamo-cortical Connections
+% -------------------------------------------------------------------
+specification.connections(9).direction='PYdr<-TC';
+specification.connections(9).mechanism_list={'iAMPA_PYdr_TC'};
+
+specification.connections(10).direction='IN<-TC';
+specification.connections(10).mechanism_list={'iAMPA_IN_TC'};
+
+specification.connections(11).direction='TC<-PYso';
+specification.connections(11).mechanism_list={'iAMPA_TC_PYso'};
+
+specification.connections(12).direction='TRN<-PYso';
+specification.connections(12).mechanism_list={'iAMPA_TRN_PYso'};

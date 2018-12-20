@@ -1,4 +1,4 @@
-% # iAMPA_PYdr_TC:
+% # iAMPA_IN_TC:
 %
 % Synaptic AMPAergic excitatory current used in (Soplata et al., 2017).
 %
@@ -10,7 +10,7 @@
 % Tags: synapse, connection, excitation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters
-gAMPA = 0.1 % mS/cm^2
+gAMPA = 0.05 % mS/cm^2
 EAMPA = 1   % mV
 % EAMPA = 0   % mV
 tauAMPA = 2
@@ -35,7 +35,7 @@ normalizingFactor = min(((2*radius + (1-removeRecurrentBool)) / (N_post/N_pre)),
 netcon = netconNearestNeighbors(2*radius, N_pre, N_post, removeRecurrentBool)
 
 % Functions
-iAMPA_PYdr_TC(X,sAMPA) = -gAMPA/normalizingFactor.*(sAMPA*netcon).*(X-EAMPA)
+iAMPA_IN_TC(X,sAMPA) = -gAMPA/normalizingFactor.*(sAMPA*netcon).*(X-EAMPA)
 
 monitor functions
 
@@ -44,4 +44,4 @@ sAMPA' = 5.*(1 + tanh(X_pre./4)).*(1-sAMPA) - sAMPA./tauAMPA;
 sAMPA(0) = sAMPAIC+sAMPANoiseIC.*rand(1,N_pre);
 
 % Linker
-@current += iAMPA_PYdr_TC(X_post,sAMPA)
+@current += iAMPA_IN_TC(X_post,sAMPA)
