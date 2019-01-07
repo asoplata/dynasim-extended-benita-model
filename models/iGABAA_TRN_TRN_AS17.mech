@@ -15,7 +15,9 @@ gGABAA = 0.1
 EGABAA = -80
 tauGABAA = 5 % ms
 
-spm = 1 % stands for "synaptic propofol multipler" of both gGABAA and tauGA
+% Propofol-modifying parameters
+propoCondMult = 1
+propoTauMult = 1
 
 sGABAAIC = 0.1
 sGABAANoiseIC= 0.1
@@ -25,12 +27,12 @@ sGABAANoiseIC= 0.1
 netcon = ones(N_pre,N_post)
 
 % Functions
-iGABAA_TRN_TRN_AS17(X,sGABAA) = -spm*gGABAA/N_pre.*(sGABAA*netcon).*(X-EGABAA)
+iGABAA_TRN_TRN_AS17(X,sGABAA) = -propoCondMult*gGABAA/N_pre.*(sGABAA*netcon).*(X-EGABAA)
 
 monitor functions
 
 % ODEsa and ICs
-sGABAA' = 2.*(1 + tanh(X_pre./4)).*(1-sGABAA) - sGABAA./(tauGABAA*spm);
+sGABAA' = 2.*(1 + tanh(X_pre./4)).*(1-sGABAA) - sGABAA./(tauGABAA*propoTauMult);
 sGABAA(0) = sGABAAIC+sGABAANoiseIC.*rand(1,Npre);
 
 % Linker
