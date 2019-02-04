@@ -30,7 +30,7 @@ gGABAA = 0.000825 % mS/cm^2
 EGABAA = -70    % mV
 
 alpha = 1
-tauS = 10 % ms
+tauGABAA = 10 % ms
 deprFactor = 0.9
 tauRes = 400 % ms
 
@@ -67,7 +67,7 @@ IGABAA_IN_IN_JB12(X,sGABAA,rec) = -propoCondMult.*gGABAA/normalizingFactor.*((re
 monitor IGABAA_IN_IN_JB12
 
 % This is the synaptic activity state variable
-sGABAA' = alpha./(1 + exp(-(X_pre+20)./2)) - sGABAA./(tauS*propoTauMult)
+sGABAA' = alpha./(1 + exp(-(X_pre+20)./2)) - sGABAA./(tauGABAA*propoTauMult)
 sGABAA(0) = sGABAAIC+sGABAANoiseIC.*rand(1,N_pre)
 
 % This is the resources state variable
