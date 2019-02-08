@@ -70,7 +70,7 @@ sGABAA' = alpha./(1 + exp(-(X_pre+20)./2)) - sGABAA./(tauGABAA*propoTauMult)
 sGABAA(0) = sGABAAIC+sGABAANoiseIC.*rand(1,N_pre)
 
 % This is the resources state variable
-res' = (1 - res)./tauRes + ((t-tspike_pre)<=dt).*(-(1 - res)./tauRes + (deprFactor.*res - res)./dt)
+res' = (1 - res)./tauRes + ((t-tspike_pre)<=(2*dt)).*(-(1 - res)./tauRes + (deprFactor.*res - res)./dt)
 res(0) = resIC-resNoiseIC.*rand(1,N_pre)
 
 % Linker
