@@ -119,7 +119,8 @@ simulator_options={
 %% 2. Assemble and customize the model
 % -------------------------------------------------------------------
 % This builds the complete model, including all populations and connections.
-spec = assembleExtSpec(numCellsScaledownFactor);
+% spec = assembleExtSpec(numCellsScaledownFactor);
+spec = assemblemGluRKLeakSpec(numCellsScaledownFactor);
 
 % % Only run this if you do NOT want any noise/randomness in your initial
 % %   conditions, which can be useful for reproducibility or debugging.
@@ -139,3 +140,4 @@ data=dsSimulate(spec,'vary',vary,simulator_options{:});
 % If you want to run your own plotting interactively, load the data using:
 
 dsPlot(data);
+% 
