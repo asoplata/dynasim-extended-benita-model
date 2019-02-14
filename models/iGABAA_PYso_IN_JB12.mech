@@ -29,7 +29,7 @@ gGABAA = 0.0277 % mS/cm^2
 EGABAA = -70    % mV
 
 alpha = 1
-tauGABAA = 10 % ms
+tauGABAA = 5 % ms
 deprFactor = 0.9
 tauRes = 400 % ms
 
