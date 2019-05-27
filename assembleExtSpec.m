@@ -1,4 +1,4 @@
-function specification = assembleExtSpec(numCellsScaledown)
+function specification = assembleExtSpec(numCellsScale)
 %ASSEMBLEEXTSPEC - Construct and connect the cortex of the (Benita et al., 2012) model
 %
 % assembleSpecification builds a (Benita et al., 2012)-type DynaSim
@@ -7,7 +7,7 @@ function specification = assembleExtSpec(numCellsScaledown)
 %
 % Inputs:
 %   'dt': time resolution of the simulation, in ms
-%   'numCellsScaledown': number to multiply each cell population size
+%   'numCellsScale': number to multiply each cell population size
 %                        by, between 0 and 1. To run the full model, use 
 %                        1. If one wishes to run a smaller model, since 
 %                        the default model is rather large, use a 
@@ -52,7 +52,7 @@ specification=[];
 % -------------------------------------------------------------------
 % PY cells and intercompartmental PY connections:
 specification.populations(1).name='PYdr';
-specification.populations(1).size=round(numCellsScaledown*100);
+specification.populations(1).size=round(numCellsScale*100);
 specification.populations(1).equations=eqns;
 specification.populations(1).mechanism_list={...
     'CaBuffer_PYdr_JB12',...
@@ -65,7 +65,7 @@ specification.populations(1).mechanism_list={...
 
 % Note that the soma mechanisms are somewhat sensitive to initial conditions
 specification.populations(2).name='PYso';
-specification.populations(2).size=round(numCellsScaledown*100);
+specification.populations(2).size=round(numCellsScale*100);
 specification.populations(2).equations=eqns;
 specification.populations(2).mechanism_list={...
     'iAppliedCurrent',...
@@ -89,7 +89,7 @@ specification.connections(2).mechanism_list={...
 
 % IN cells and intercompartmental IN connections:
 specification.populations(3).name='IN';
-specification.populations(3).size=round(numCellsScaledown*20);
+specification.populations(3).size=round(numCellsScale*20);
 specification.populations(3).equations=eqns;
 specification.populations(3).mechanism_list={...
     'iAppliedCurrent',...
@@ -117,7 +117,7 @@ specification.connections(5).mechanism_list={...
 % -------------------------------------------------------------------
 
 specification.populations(4).name='TC';
-specification.populations(4).size=round(numCellsScaledown*20);
+specification.populations(4).size=round(numCellsScale*20);
 specification.populations(4).equations=eqns;
 specification.populations(4).mechanism_list={...
     'iAppliedCurrent',...
@@ -130,7 +130,7 @@ specification.populations(4).mechanism_list={...
     'iH_TC_AS17'};
 
 specification.populations(5).name='TRN';
-specification.populations(5).size=round(numCellsScaledown*20);
+specification.populations(5).size=round(numCellsScale*20);
 specification.populations(5).equations=eqns;
 specification.populations(5).mechanism_list={...
     'iAppliedCurrent',...
