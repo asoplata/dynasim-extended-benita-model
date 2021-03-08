@@ -1,4 +1,4 @@
-function specification = assembleExtThalRadSpec(numCellsScale)
+function specification = assembleDoubleCortExtSpec(numCellsScale)
 %ASSEMBLEEXTSPEC - Construct and connect the cortex of the (Benita et al., 2012) model
 %
 % assembleSpecification builds a (Benita et al., 2012)-type DynaSim
@@ -52,7 +52,7 @@ specification=[];
 % -------------------------------------------------------------------
 % PY cells and intercompartmental PY connections:
 specification.populations(1).name='PYdr';
-specification.populations(1).size=round(numCellsScale*100);
+specification.populations(1).size=round(numCellsScale*200);
 specification.populations(1).equations=eqns;
 specification.populations(1).mechanism_list={...
     'CaBuffer_PYdr_JB12',...
@@ -65,7 +65,7 @@ specification.populations(1).mechanism_list={...
 
 % Note that the soma mechanisms are somewhat sensitive to initial conditions
 specification.populations(2).name='PYso';
-specification.populations(2).size=round(numCellsScale*100);
+specification.populations(2).size=round(numCellsScale*200);
 specification.populations(2).equations=eqns;
 specification.populations(2).mechanism_list={...
     'iAppliedCurrent',...
@@ -89,7 +89,7 @@ specification.connections(2).mechanism_list={...
 
 % IN cells and intercompartmental IN connections:
 specification.populations(3).name='IN';
-specification.populations(3).size=round(numCellsScale*20);
+specification.populations(3).size=round(numCellsScale*40);
 specification.populations(3).equations=eqns;
 specification.populations(3).mechanism_list={...
     'iAppliedCurrent',...
@@ -142,13 +142,13 @@ specification.populations(5).mechanism_list={...
 
 specification.connections(6).direction='TC<-TRN';
 specification.connections(6).mechanism_list={...
-    'iGABAA_TC_TRN_rad',...
-    'iGABAB_TC_TRN_rad',...
+    'iGABAA_TC_TRN_AS17',...
+    'iGABAB_TC_TRN_AS17',...
     };
 specification.connections(7).direction='TRN<-TRN';
-specification.connections(7).mechanism_list={'iGABAA_TRN_TRN_rad'};
+specification.connections(7).mechanism_list={'iGABAA_TRN_TRN_AS17'};
 specification.connections(8).direction='TRN<-TC';
-specification.connections(8).mechanism_list={'iAMPA_TRN_TC_rad'};
+specification.connections(8).mechanism_list={'iAMPA_TRN_TC_AS17'};
 
 % -------------------------------------------------------------------
 %% 4. Thalamo-cortical Connections

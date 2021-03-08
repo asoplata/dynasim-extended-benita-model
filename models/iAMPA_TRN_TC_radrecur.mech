@@ -1,4 +1,4 @@
-% # iAMPA_TRN_TC_rad:
+% # iAMPA_TRN_TC_AS17:
 %
 % Synaptic AMPAergic excitatory current used in (Soplata et al., 2017).
 %
@@ -23,8 +23,7 @@ sAMPANoiseIC= 0.1
 % to, from the source's perspective.
 radius = 10
 
-% don't actually need this but whatever
-removeRecurrentBool = 1
+removeRecurrentBool = 0
 % We also need to normalize the conductance in mS/cm^2 by the number of
 % connections each target cell is receiving on average, so that the TOTAL
 % sum of their conductive inputs adds to our overall maximal conductance
@@ -35,7 +34,7 @@ normalizingFactor = min(((2*radius + (1-removeRecurrentBool)) / (N_post/N_pre)),
 netcon = netconNearestNeighbors(2*radius, N_pre, N_post, removeRecurrentBool)
 
 % Functions
-iAMPA_TRN_TC_rad(X,sAMPA) = -gAMPA/normalizingFactor.*(sAMPA*netcon).*(X-EAMPA)
+iAMPA_TRN_TC_AS17(X,sAMPA) = -gAMPA/normalizingFactor.*(sAMPA*netcon).*(X-EAMPA)
 
 monitor functions
 
@@ -44,4 +43,4 @@ sAMPA' = 5.*(1 + tanh(X_pre./4)).*(1-sAMPA) - sAMPA./tauAMPA;
 sAMPA(0) = sAMPAIC+sAMPANoiseIC.*rand(1,N_pre);
 
 % Linker
-@current += iAMPA_TRN_TC_rad(X_post,sAMPA)
+@current += iAMPA_TRN_TC_AS17(X_post,sAMPA)

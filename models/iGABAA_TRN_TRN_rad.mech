@@ -1,4 +1,4 @@
-% # iGABAA_TRN_TRN_AS17:
+% # iGABAA_TRN_TRN_rad:
 %
 % Synaptic intrathalamic GABA-A-ergic inhibitory current used in (Soplata et
 % al., 2017).
@@ -39,7 +39,7 @@ normalizingFactor = min(((2*radius + (1-removeRecurrentBool)) / (N_post/N_pre)),
 netcon = netconNearestNeighbors(2*radius, N_pre, N_post, removeRecurrentBool)
 
 % Functions
-iGABAA_TRN_TRN_AS17(X,sGABAA) = -propoCondMult*gGABAA/normalizingFactor.*(sGABAA*netcon).*(X-EGABAA)
+iGABAA_TRN_TRN_rad(X,sGABAA) = -propoCondMult*gGABAA/normalizingFactor.*(sGABAA*netcon).*(X-EGABAA)
 
 monitor functions
 
@@ -48,4 +48,4 @@ sGABAA' = 2.*(1 + tanh(X_pre./4)).*(1-sGABAA) - sGABAA./(tauGABAA*propoTauMult);
 sGABAA(0) = sGABAAIC+sGABAANoiseIC.*rand(1,Npre);
 
 % Linker
-@current += iGABAA_TRN_TRN_AS17(X_post,sGABAA)
+@current += iGABAA_TRN_TRN_rad(X_post,sGABAA)
